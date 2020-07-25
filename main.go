@@ -28,7 +28,3 @@ func main() {
 	log.Printf("Listening on: %s", l)
 	graceful.Run(l, time.Duration(config.Server.Timeout), s)
 }
-
-func NewServer(c *structs.Config) {
-	fmt.Printf("hello, world\n")
-}
