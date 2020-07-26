@@ -1,0 +1,45 @@
+{{define "header"}}
+<header style="background-color: #9067a9;">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6">
+        <h1 class="display-4">
+          <!-- TODO: do this without negaitive margins -->
+          Math<img src="/yums.org.uk/images/integral.png" style="height: 50px; margin-right:-5px; margin-left:-5px;" alt="S">oc
+        </h1>
+      </div>
+      <div class="col-sm-6">
+        <form class="form-inline py-3 float-sm-right">
+          <div class="input-group">
+            <input type="search" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="nav-search">
+            <div class="input-group-append">
+              <button class="btn btn-dark" type="submit" id="nav-search">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-dark rounded-top" style="background-color: #613b7a;">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About Us</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contact</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Events</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</header>
+{{end}}
