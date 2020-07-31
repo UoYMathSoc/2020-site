@@ -17,7 +17,15 @@ func NewStaticController(c *structs.Config) *StaticController {
 }
 
 func (staticC *StaticController) GetIndex(w http.ResponseWriter, r *http.Request) {
-	err := utils.RenderTemplate(w, staticC.config.PageContext, nil, "index.tmpl")
+	err := utils.RenderContent(w, staticC.config.PageContext, nil, "index.tmpl")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+}
+
+func (staticC *StaticController) GetLogin(w http.ResponseWriter, r *http.Request) {
+	err := utils.RenderTemplates(w, staticC.config.PageContext, nil, "admin/login.tmpl", "elements/adminbar.tmpl")
 	if err != nil {
 		log.Println(err)
 		return

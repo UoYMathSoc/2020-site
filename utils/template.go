@@ -12,17 +12,26 @@ import (
 const TemplatePrefix = "views"
 
 var BaseTemplates = []string{
-	"partials/header.tmpl",
-	"partials/footer.tmpl",
 	"partials/base.tmpl",
+	"partials/header.tmpl",
 }
 
-func RenderTemplate(w http.ResponseWriter, context structs.PageContext, data interface{}, mainTemplate string) error {
+// Think of better variable name
+var OtherTemplates = []string{
+	"partials/footer.tmpl",
+	"elements/navbar.tmpl",
+}
+
+func RenderContent(w http.ResponseWriter, context structs.PageContext, data interface{}, content string) error {
+	templates := append(OtherTemplates, content)
+	return RenderTemplates(w, context, data, templates...)
+}
+
+func RenderTemplates(w http.ResponseWriter, context structs.PageContext, data interface{}, templates ...string) error {
 	var err error
-
-	templates := append(BaseTemplates, mainTemplate)
-
 	var templatePaths []string
+	templates = append(BaseTemplates, templates...)
+
 	for _, template := range templates {
 		templatePaths = append(templatePaths, filepath.Join(TemplatePrefix, template))
 	}

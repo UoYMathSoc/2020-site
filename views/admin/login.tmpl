@@ -1,0 +1,22 @@
+{{define "content"}}
+<div class="container my-auto">
+<form class="form-signin px-5">
+  <div class="form-row">
+    <div class="form-group col-lg-6">
+      <label for="inputUsername">Email</label><div class="input-group mb-3">
+      <input type="username" id="inputUsername" class="form-control form-control-lg" placeholder="abc123" required="" autofocus="" aria-describedby="emailDomain" aria-label="username">
+      <div class="input-group-append">
+        <span class="input-group-text" id="emailDomain">@york.ac.uk</span>
+      </div>
+    </div>
+  </div>
+  <div class="form-group col-lg-6">
+    <label for="inputPassword">Password</label>
+    <input type="password" id="inputPassword" class="form-control form-control-lg" placeholder="Password" required="">
+    <a href="https://yums.org.uk/login/pwReset/">Forgotten Password</a></div>
+  </div>
+  <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">Sign in</button>
+</form>
+
+</div>
+{{end}}
