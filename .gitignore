@@ -17,3 +17,6 @@
 
 # Config files
 *.toml
+
+# User specific GoLand files
+/.idea/workspace.xml
