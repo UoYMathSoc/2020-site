@@ -14,3 +14,9 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 2020-site
+
+# Config files
+*.toml
+
+# User specific GoLand files
+/.idea/workspace.xml
