@@ -12,14 +12,14 @@ import (
 const TemplatePrefix = "views"
 
 var BaseTemplates = []string{
-	"partials/base.tmpl",
-	"partials/header.tmpl",
+	"partials/base.gohtml",
+	"partials/header.gohtml",
 }
 
 // Think of better variable name
 var OtherTemplates = []string{
-	"partials/footer.tmpl",
-	"elements/navbar.tmpl",
+	"partials/footer.gohtml",
+	"elements/navbar.gohtml",
 }
 
 func RenderContent(w http.ResponseWriter, context structs.PageContext, data interface{}, content string) error {
@@ -36,7 +36,7 @@ func RenderTemplates(w http.ResponseWriter, context structs.PageContext, data in
 		templatePaths = append(templatePaths, filepath.Join(TemplatePrefix, template))
 	}
 
-	t := template.New("base.tmpl")
+	t := template.New("base.gohtml")
 	t.Funcs(template.FuncMap{
 		"url":  func(s string) string { return PrefixURL(s, context.URLPrefix) },
 		"html": renderHTML,

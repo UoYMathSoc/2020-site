@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"time"
-	
+
 	"github.com/BurntSushi/toml"
 	"github.com/UoYMathSoc/2020-site/structs"
 	"github.com/stretchr/graceful"
@@ -18,7 +18,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
+	MigrateModels(ActiveModels)
+
 	s, err := NewServer(config)
 	if err != nil {
 		log.Fatal(err)

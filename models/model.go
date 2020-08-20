@@ -1,9 +1,13 @@
 package models
 
-type ModelInterface interface {
-	Get() (data *interface{}, err error)
-}
+import (
+	"github.com/jinzhu/gorm"
+)
 
 type Model struct {
-	session int
+	gorm.Model
+}
+
+func newDatabase() (*gorm.DB, error) {
+	return gorm.Open("postgres", "dbname=mydb sslmode=disable")
 }

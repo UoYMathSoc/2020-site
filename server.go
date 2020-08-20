@@ -1,22 +1,16 @@
 package main
 
 import (
-	//"fmt"
-	//"net/http"
-	//"strconv"
-
 	"github.com/UoYMathSoc/2020-site/controllers"
 	"github.com/UoYMathSoc/2020-site/structs"
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
 )
 
-// Server is the type of the main 2020site web application.
 type Server struct {
 	*negroni.Negroni
 }
 
-// NewServer creates a 2020site server based on the config c.
 func NewServer(c *structs.Config) (*Server, error) {
 
 	s := Server{negroni.Classic()}
@@ -28,6 +22,12 @@ func NewServer(c *structs.Config) (*Server, error) {
 	//headRouter := router.Methods("HEAD").Subrouter()
 
 	// Routes go in here
+	//loginC := controllers.NewLoginController(c)
+	//postRouter.HandleFunc("/login/", loginC.Post)
+
+	userC := controllers.NewUserController(c)
+	getRouter.HandleFunc("/user/{username}", userC.Get)
+
 	staticC := controllers.NewStaticController(c)
 	getRouter.HandleFunc("/", staticC.GetIndex)
 	getRouter.HandleFunc("/login/", staticC.GetLogin)
