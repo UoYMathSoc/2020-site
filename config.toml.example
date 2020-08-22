@@ -10,9 +10,10 @@
 
 # This is the config for the server
 [server]
-	address	= "localhost"
-	port    = 3000
-	timeout	= 0
+	address	 = "localhost"
+	port     = 3000
+	timeout	 = 0
+	database = "database.db"
 
 # This is data that will be passed into all templates
 [pageContext]

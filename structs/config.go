@@ -2,7 +2,7 @@ package structs
 
 // Config is a structure containing global website configuration.
 //
-// See the comments for Server and PageContext for more details.
+// See the comments for Server, Database and PageContext for more details.
 type Config struct {
 	Server      Server      `toml:"server"`
 	PageContext PageContext `toml:"pageContext"`
@@ -10,9 +10,10 @@ type Config struct {
 
 // Server is a structure containing server configuration.
 type Server struct {
-	Address string `toml:"address"`
-	Port    int    `toml:"port"`
-	Timeout int    `toml:"timeout"`
+	Address  string `toml:"address"`
+	Port     int    `toml:"port"`
+	Timeout  int    `toml:"timeout"`
+	Database string `toml:"database"`
 }
 
 // PageContext is a structure containing static information to provide

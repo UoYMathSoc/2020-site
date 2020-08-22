@@ -1,13 +1,13 @@
 package models
 
 import (
+	"github.com/UoYMathSoc/2020-site/structs"
+
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 type Model struct {
 	gorm.Model
-}
-
-func newDatabase() (*gorm.DB, error) {
-	return gorm.Open("postgres", "dbname=mydb sslmode=disable")
+	config *structs.Config
 }

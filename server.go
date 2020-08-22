@@ -18,12 +18,12 @@ func NewServer(c *structs.Config) (*Server, error) {
 	router := mux.NewRouter().StrictSlash(true)
 
 	getRouter := router.Methods("GET").Subrouter()
-	//postRouter := router.Methods("POST").Subrouter()
+	postRouter := router.Methods("POST").Subrouter()
 	//headRouter := router.Methods("HEAD").Subrouter()
 
 	// Routes go in here
-	//loginC := controllers.NewLoginController(c)
-	//postRouter.HandleFunc("/login/", loginC.Post)
+	loginC := controllers.NewLoginController(c)
+	postRouter.HandleFunc("/login/", loginC.Post)
 
 	userC := controllers.NewUserController(c)
 	getRouter.HandleFunc("/user/{username}", userC.Get)

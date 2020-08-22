@@ -1,7 +1,7 @@
 package models
 
 import (
-	"fmt"
+	"github.com/UoYMathSoc/2020-site/database"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
@@ -11,14 +11,33 @@ type UserModel struct {
 	HashedPassword []byte
 }
 
-func GetUser(username string) (userM *UserModel, err error) {
-	db, err := newDatabase()
-	if err != nil {
-		fmt.Println(err)
-		return userM, err
-	}
-	defer db.Close()
+func Get(username string) (user *UserModel) {
+	return getUser(username)
+}
 
-	db.Where("username = ?", username).Find(&userM)
-	return userM, err
+func getUsers() (users *[]UserModel) {
+	db := database.Instance
+	db.Find(users)
+	return users
+}
+
+func newUser(user UserModel) {
+	db := database.Instance
+	db.Create(user)
+}
+
+func getUser(username string) (user *UserModel) {
+	db := database.Instance
+	db.Where("username = ?", username).Find(&user)
+	return user
+}
+
+func updateUser(username string, user UserModel) {
+	db := database.Instance
+	db.Where("username = ?", username).Updates(user)
+}
+
+func deleteUser(username string) {
+	db := database.Instance
+	db.Where("username = ?", username).Delete(UserModel{})
 }

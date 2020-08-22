@@ -1,13 +1,18 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginModel struct {
-	gorm.Model
+	Model
 }
 
 func (m *LoginModel) Post(formParams map[string][]string) (err error) {
-	return nil
+	username := formParams["username"][0]
+	password := formParams["password"][0]
+
+	user := getUser(username)
+
+	return bcrypt.CompareHashAndPassword(user.HashedPassword, []byte(password))
 }
