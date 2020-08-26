@@ -20,7 +20,11 @@ func (userC *UserController) Get(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	username := vars["username"]
 
-	userM := models.Get(username)
+	userM, err := models.NewUserModel().Get(username)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	fmt.Fprintf(w, "Hello, %s", userM.Username)
 }
