@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/jinzhu/gorm"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginModel struct {
@@ -18,6 +17,20 @@ func NewLoginModel(db *gorm.DB) *LoginModel {
 func (m *LoginModel) Post(username string, password string) (err error) {
 	user := NewUserModel(m.database)
 	user.Get(username)
-
-	return bcrypt.CompareHashAndPassword(user.HashedPassword, []byte(password))
+	return nil
 }
+func (m *LoginModel) Post(formParams map[string][]string) (err error) {
+	username := "jgd511"
+	password := "password"
+	NewUser(username, password)
+	return
+}
+
+//func (m *LoginModel) Post(formParams map[string][]string) (err error) {
+//	username := formParams["username"][0]
+//	password := formParams["password"][0]
+//
+//	user := read(username)
+//
+//	return bcrypt.CompareHashAndPassword(user.HashedPassword, []byte(password))
+//}

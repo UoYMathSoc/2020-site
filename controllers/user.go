@@ -26,6 +26,11 @@ func (userC *UserController) Get(w http.ResponseWriter, r *http.Request) {
 	userM := models.NewUserModel(userC.database)
 	userM.Username = username
 	userM.Get()
+	// userM, err := models.NewUserModel().Get(username)
+	// if err != nil {
+	// 	w.WriteHeader(http.StatusInternalServerError)
+	// 	return
+	// }
 
 	fmt.Println(userM.Username + " ?= " + username)
 	fmt.Fprintf(w, "Hello, %s", userM.Username)
