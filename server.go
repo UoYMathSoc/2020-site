@@ -7,10 +7,12 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Server is the type of the main 2020site web application.
 type Server struct {
 	*negroni.Negroni
 }
 
+// NewServer creates a 2020site server based on the config c.
 func NewServer(c *structs.Config) (*Server, error) {
 
 	s := Server{negroni.Classic()}
@@ -21,11 +23,13 @@ func NewServer(c *structs.Config) (*Server, error) {
 	postRouter := router.Methods("POST").Subrouter()
 	//headRouter := router.Methods("HEAD").Subrouter()
 
+	db := InitDatabase(c)
+
 	// Routes go in here
-	loginC := controllers.NewLoginController(c)
+	loginC := controllers.NewLoginController(c, db)
 	postRouter.HandleFunc("/login/", loginC.Post)
 
-	userC := controllers.NewUserController(c)
+	userC := controllers.NewUserController(c, db)
 	getRouter.HandleFunc("/user/{username}", userC.Get)
 
 	staticC := controllers.NewStaticController(c)

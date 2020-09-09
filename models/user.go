@@ -1,43 +1,61 @@
 package models
 
 import (
-	"github.com/UoYMathSoc/2020-site/database"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"errors"
+
+	"github.com/jinzhu/gorm"
 )
 
+// UserModel is used when accessing the site's users
 type UserModel struct {
 	Model
 	Username       string
 	HashedPassword []byte
 }
 
-func Get(username string) (user *UserModel) {
-	return getUser(username)
+// NewUserModel returns a new UserModel with access to the database
+func NewUserModel(db *gorm.DB) *UserModel {
+	model := Model{database: db}
+	return &UserModel{Model: model, Username: "", HashedPassword: []byte("")}
 }
 
-func getUsers() (users *[]UserModel) {
-	db := database.Instance
-	db.Find(users)
+// Get populates a user's UserModel. Uses user's username unless one is provided as a parameter
+func (user *UserModel) Get(usernames ...string) (*UserModel, error) {
+	username := user.Username
+	if len(usernames) > 0 {
+		username = usernames[0]
+	}
+	user.getUser()
+	if username == user.Username {
+		return user, nil
+	}
+	return nil, errors.New("User does note exist in database")
+}
+
+func (user *UserModel) getUsers() (users *[]UserModel) {
+	user.database.Find(users)
+	for _, thisUser := range *users {
+		thisUser.database = user.database
+	}
 	return users
 }
 
-func newUser(user UserModel) {
-	db := database.Instance
-	db.Create(user)
-}
-
-func getUser(username string) (user *UserModel) {
-	db := database.Instance
-	db.Where("username = ?", username).Find(&user)
+func (user *UserModel) newUser() *UserModel {
+	user.database.Create(user)
 	return user
 }
 
-func updateUser(username string, user UserModel) {
-	db := database.Instance
-	db.Where("username = ?", username).Updates(user)
+func (user *UserModel) getUser() *UserModel {
+	user.database.Where("username = ?", user.Username).Find(&user)
+	return user
 }
 
-func deleteUser(username string) {
-	db := database.Instance
-	db.Where("username = ?", username).Delete(UserModel{})
+func (user *UserModel) updateUser() *UserModel {
+	user.database.Where("username = ?", user.Username).Updates(user)
+	return user
+}
+
+func (user *UserModel) deleteUser() *UserModel {
+	user.database.Where("username = ?", user.Username).Delete(UserModel{})
+	return user
 }

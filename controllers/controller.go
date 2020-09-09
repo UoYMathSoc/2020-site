@@ -4,13 +4,15 @@ import (
 	"net/http"
 
 	"github.com/UoYMathSoc/2020-site/structs"
+	"github.com/jinzhu/gorm"
 )
 
 type Controller struct {
-	config *structs.Config
+	config   *structs.Config
+	database *gorm.DB
 }
 
-// Methods all controllers must implement.
+// ControllerInterface defines the methods all controllers must implement.
 type ControllerInterface interface {
 	Get()
 	Post()
