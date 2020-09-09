@@ -26,3 +26,6 @@
 /.idea/usage.statistics.xml
 /.idea/tasks.xml
 /.idea/shelf/*
+
+# Database files
+*.db
