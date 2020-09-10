@@ -32,6 +32,11 @@ func RenderTemplates(w http.ResponseWriter, context structs.PageContext, data in
 	var templatePaths []string
 	templates = append(BaseTemplates, templates...)
 
+	td := structs.Globals{
+		PageContext: context,
+		PageData:    data,
+	}
+
 	for _, template := range templates {
 		templatePaths = append(templatePaths, filepath.Join(TemplatePrefix, template))
 	}
@@ -46,7 +51,7 @@ func RenderTemplates(w http.ResponseWriter, context structs.PageContext, data in
 		return err
 	}
 
-	return t.Execute(w, data)
+	return t.Execute(w, td)
 }
 
 func renderHTML(value interface{}) template.HTML {
