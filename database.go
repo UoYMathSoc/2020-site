@@ -22,11 +22,11 @@ func InitDatabase(c *structs.Config) *gorm.DB {
 		panic("failed to connect to database")
 	}
 	log.Printf("Connection opened to Database: %s", c.Server.Database)
-	for i, model := range Models {
+	//log.Printf("Database Migrated: 0%%")
+	for _, model := range Models {
 		db.AutoMigrate(model)
-		var percent int = (i * 100) / len(Models)
-		log.Printf("Database Migrated: %d%%", percent)
+		//log.Printf("Database Migrated: %d%%", ((i + 1) * 100) / len(Models))
 	}
-	log.Printf("Database Migrated!")
+	log.Printf("Database Migrated")
 	return db
 }

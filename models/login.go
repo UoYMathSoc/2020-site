@@ -14,23 +14,8 @@ func NewLoginModel(db *gorm.DB) *LoginModel {
 }
 
 // Post attempts to log in a user using the credentials given
-func (m *LoginModel) Post(username string, password string) (err error) {
+func (m *LoginModel) Post(username string, password string) error {
 	user := NewUserModel(m.database)
-	user.Get(username)
-	return nil
+	err := user.Get(username)
+	return err
 }
-func (m *LoginModel) Post(formParams map[string][]string) (err error) {
-	username := "jgd511"
-	password := "password"
-	NewUser(username, password)
-	return
-}
-
-//func (m *LoginModel) Post(formParams map[string][]string) (err error) {
-//	username := formParams["username"][0]
-//	password := formParams["password"][0]
-//
-//	user := read(username)
-//
-//	return bcrypt.CompareHashAndPassword(user.HashedPassword, []byte(password))
-//}

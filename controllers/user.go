@@ -14,7 +14,7 @@ type UserController struct {
 	Controller
 }
 
-// NewUserController comment
+// NewUserController creates a new 'null' user controller
 func NewUserController(c *structs.Config, db *gorm.DB) *UserController {
 	return &UserController{Controller{config: c, database: db}}
 }
@@ -24,14 +24,10 @@ func (userC *UserController) Get(w http.ResponseWriter, r *http.Request) {
 	username := vars["username"]
 
 	userM := models.NewUserModel(userC.database)
-	userM.Username = username
-	userM.Get()
-	// userM, err := models.NewUserModel().Get(username)
-	// if err != nil {
-	// 	w.WriteHeader(http.StatusInternalServerError)
-	// 	return
-	// }
+	if err := userM.Get(username); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
-	fmt.Println(userM.Username + " ?= " + username)
 	fmt.Fprintf(w, "Hello, %s", userM.Username)
 }
