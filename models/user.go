@@ -54,6 +54,10 @@ func (user *UserModel) NewUser(username string, password string) error {
 	return nil
 }
 
+func (user *UserModel) Validate(password string) error {
+	return bcrypt.CompareHashAndPassword(user.hashedPassword, []byte(password))
+}
+
 func (user *UserModel) create() *UserModel {
 	user.database.Create(user)
 	return user

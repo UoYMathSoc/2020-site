@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"github.com/jinzhu/gorm"
 )
 
@@ -17,5 +18,12 @@ func NewLoginModel(db *gorm.DB) *LoginModel {
 func (m *LoginModel) Post(username string, password string) error {
 	user := NewUserModel(m.database)
 	err := user.Get(username)
+	if err != nil {
+		return err
+	}
+	err = user.Validate(password)
+	if err != nil {
+		return fmt.Errorf("could not validate user's credentails: %w", err)
+	}
 	return err
 }

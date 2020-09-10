@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/UoYMathSoc/2020-site/models"
@@ -23,6 +24,9 @@ func (loginC *LoginController) Post(w http.ResponseWriter, r *http.Request) {
 	loginM := models.NewLoginModel(loginC.database)
 	err := loginM.Post(username, password)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
+		log.Println(err)
+		http.Error(w, "The password that you have entered is incorrect", http.StatusUnauthorized)
+		return
 	}
+
 }
