@@ -18,9 +18,6 @@
 # Config files
 *.toml
 
-# sqlite databases
-*.db
-
 # User specific GoLand files
 /.idea/workspace.xml
 /.idea/usage.statistics.xml
@@ -29,3 +26,4 @@
 
 # Database files
 *.db
+/.idea/dataSources/*
