@@ -25,7 +25,7 @@ func (userC *UserController) Get(w http.ResponseWriter, r *http.Request) {
 
 	userM := models.NewUserModel(userC.database)
 	if err := userM.Get(username); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

@@ -23,6 +23,6 @@ func (loginC *LoginController) Post(w http.ResponseWriter, r *http.Request) {
 	loginM := models.NewLoginModel(loginC.database)
 	err := loginM.Post(username, password)
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
+		http.Error(w, err.Error(), http.StatusUnauthorized)
 	}
 }

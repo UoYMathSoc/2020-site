@@ -2,10 +2,9 @@ package models
 
 import (
 	"errors"
-	"golang.org/x/crypto/bcrypt"
-	"log"
-
+	"fmt"
 	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // UserModel is used when accessing the site's users
@@ -30,7 +29,7 @@ func (user *UserModel) Get(usernames ...string) error {
 	if user.read().Username == username {
 		return nil
 	}
-	return errors.New("user does not exist in database")
+	return errors.New("could not find specified user in the database")
 }
 
 //func (user *UserModel) GetUsers() (users *[]UserModel, err error) {
@@ -44,15 +43,13 @@ func (user *UserModel) Get(usernames ...string) error {
 func (user *UserModel) NewUser(username string, password string) error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
 	if err != nil {
-		log.Print(err)
-		return err
+		return fmt.Errorf("could not generate hash for password: %w", err)
 	}
 	user.Username = username
 	user.hashedPassword = hashedPassword
 	user.create()
-	if err := user.Get(username); err != nil {
-		err := errors.New("user could not be registered")
-		return err
+	if err := user.Get(); err != nil {
+		return errors.New("could not create user in database")
 	}
 	return nil
 }
