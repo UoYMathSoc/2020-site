@@ -19,11 +19,10 @@
 *.toml
 
 # User specific GoLand files
-/.idea/workspace.xml
-/.idea/usage.statistics.xml
-/.idea/tasks.xml
-/.idea/shelf/*
+*.iml
+*.ipr
+*.iws
+.idea/
 
 # Database files
 *.db
-/.idea/dataSources/*
