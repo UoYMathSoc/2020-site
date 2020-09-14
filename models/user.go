@@ -3,8 +3,8 @@ package models
 import (
 	"errors"
 	"fmt"
-	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 // UserModel is used when accessing the site's users
@@ -14,18 +14,19 @@ type UserModel struct {
 	hashedPassword []byte
 }
 
+type Users []UserModel
+
 // NewUserModel returns a new UserModel with access to the database
 func NewUserModel(db *gorm.DB) *UserModel {
-	model := Model{database: db}
-	return &UserModel{Model: model, Username: "", hashedPassword: []byte("")}
+	return &UserModel{Model: Model{database: db}}
 }
 
-// Get populates a user's UserModel. Uses user's username unless one is provided as a parameter
+// Get populates a user's UserModel. Its uses user's username unless one is provided as a parameter
 func (user *UserModel) Get(usernames ...string) error {
-	username := user.Username
 	if len(usernames) > 0 {
-		username = usernames[0]
+		user.Username = usernames[0]
 	}
+	username := user.Username
 	if user.read().Username == username {
 		return nil
 	}
@@ -40,16 +41,21 @@ func (user *UserModel) Get(usernames ...string) error {
 //	return users, err
 //}
 
-func (user *UserModel) NewUser(username string, password string) error {
+func (user *UserModel) Register(username string, password string) error {
+	user.Username = username
+	err := user.Get()
+	if err == nil {
+		return errors.New("user already exists")
+	}
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
 	if err != nil {
-		return fmt.Errorf("could not generate hash for password: %w", err)
+		return fmt.Errorf("could not generate hash for provided password: %w", err)
 	}
-	user.Username = username
 	user.hashedPassword = hashedPassword
 	user.create()
-	if err := user.Get(); err != nil {
-		return errors.New("could not create user in database")
+	err = user.Get()
+	if err != nil {
+		return errors.New("could not add user to database")
 	}
 	return nil
 }
@@ -59,12 +65,12 @@ func (user *UserModel) Validate(password string) error {
 }
 
 func (user *UserModel) create() *UserModel {
-	user.database.Create(user)
+	user.database.Create(&user)
 	return user
 }
 
 func (user *UserModel) read() *UserModel {
-	user.database.Where("username = ?", user.Username).Find(&user)
+	user.database.Where("username = ?", user.Username).Find(user)
 	return user
 }
 
@@ -74,6 +80,6 @@ func (user *UserModel) update() *UserModel {
 }
 
 func (user *UserModel) delete() *UserModel {
-	user.database.Where("username = ?", user.Username).Delete(user)
+	user.database.Where("username = ?", user.Username).Delete(&user)
 	return user
 }

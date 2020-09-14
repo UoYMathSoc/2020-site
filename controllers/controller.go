@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/UoYMathSoc/2020-site/structs"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type Controller struct {

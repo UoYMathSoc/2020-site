@@ -7,7 +7,7 @@ import (
 	"github.com/UoYMathSoc/2020-site/models"
 	"github.com/UoYMathSoc/2020-site/structs"
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type UserController struct {
@@ -24,7 +24,8 @@ func (userC *UserController) Get(w http.ResponseWriter, r *http.Request) {
 	username := vars["username"]
 
 	userM := models.NewUserModel(userC.database)
-	if err := userM.Get(username); err != nil {
+	err := userM.Get(username)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

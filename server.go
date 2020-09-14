@@ -32,6 +32,9 @@ func NewServer(c *structs.Config) (*Server, error) {
 	userC := controllers.NewUserController(c, db)
 	getRouter.HandleFunc("/user/{username}", userC.Get)
 
+	calendarC := controllers.NewCalendarController(c, db)
+	getRouter.HandleFunc("/calendar/ical", calendarC.GetICal)
+
 	staticC := controllers.NewStaticController(c)
 	getRouter.HandleFunc("/", staticC.GetIndex)
 	getRouter.HandleFunc("/login/", staticC.GetLogin)

@@ -6,7 +6,7 @@ import (
 
 	"github.com/UoYMathSoc/2020-site/models"
 	"github.com/UoYMathSoc/2020-site/structs"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type LoginController struct {

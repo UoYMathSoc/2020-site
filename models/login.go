@@ -2,7 +2,7 @@ package models
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type LoginModel struct {
@@ -11,13 +11,17 @@ type LoginModel struct {
 
 // NewLoginModel returns a new UserModel with access to the database
 func NewLoginModel(db *gorm.DB) *LoginModel {
-	return &LoginModel{Model{database: db}}
+	return &LoginModel{Model: Model{database: db}}
 }
 
 // Post attempts to log in a user using the credentials given
 func (m *LoginModel) Post(username string, password string) error {
 	user := NewUserModel(m.database)
-	err := user.Get(username)
+	err := user.Register(username, password)
+	if err != nil {
+		return fmt.Errorf("Unable to register user: %w", err)
+	}
+	err = user.Get(username)
 	if err != nil {
 		return err
 	}
