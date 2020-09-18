@@ -3,11 +3,12 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
+	"github.com/UoYMathSoc/2020-site/database"
 	"github.com/UoYMathSoc/2020-site/models"
 	"github.com/UoYMathSoc/2020-site/structs"
 	"github.com/gorilla/mux"
-	"gorm.io/gorm"
 )
 
 type UserController struct {
@@ -15,20 +16,40 @@ type UserController struct {
 }
 
 // NewUserController creates a new 'null' user controller
-func NewUserController(c *structs.Config, db *gorm.DB) *UserController {
-	return &UserController{Controller{config: c, database: db}}
+func NewUserController(c *structs.Config, q *database.Queries) *UserController {
+	return &UserController{Controller{config: c, querier: q}}
 }
 
 func (userC *UserController) Get(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	username := vars["username"]
+	id, _ := strconv.Atoi(vars["id"])
 
-	userM := models.NewUserModel(userC.database)
-	err := userM.Get(username)
+	userM := models.NewUserModel(userC.querier)
+	user, positions, err := userM.Get(int32(id))
+	if len(positions) == 0 {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	fmt.Fprintf(w, "Hello, %s", userM.Username)
+	//data := struct {
+	//	User           *database.User
+	//	Positions   	[]database.Position
+	//}{
+	//	User:           user,
+	//	Positions:  	positions,
+	//}
+	//
+	//err = utils.RenderTemplates(w, userC.config.PageContext, data, "user.gohtml")
+	//if err != nil {
+	//	fmt.Println(err)
+	//	return
+	//}
+
+	fmt.Fprintf(w, "Hello, %s", user.Name)
 }

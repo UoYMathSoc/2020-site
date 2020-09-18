@@ -2,29 +2,28 @@ package controllers
 
 import (
 	"bytes"
-	"github.com/UoYMathSoc/2020-site/models"
-	"log"
+	"net/http"
 
+	"github.com/UoYMathSoc/2020-site/database"
+	"github.com/UoYMathSoc/2020-site/models"
 	"github.com/UoYMathSoc/2020-site/structs"
 	"github.com/randoomjd/goics"
-	"gorm.io/gorm"
-	"net/http"
 )
 
 type CalendarController struct {
 	Controller
 }
 
-func NewCalendarController(c *structs.Config, db *gorm.DB) *CalendarController {
-	return &CalendarController{Controller{config: c, database: db}}
+func NewCalendarController(c *structs.Config, q *database.Queries) *CalendarController {
+	return &CalendarController{Controller{config: c, querier: q}}
 }
 
 func (calendarC *CalendarController) GetICal(w http.ResponseWriter, r *http.Request) {
-	eventM := models.NewEventModel(calendarC.database)
-	events, err := eventM.GetEvents()
+	eventM := models.NewEventModel(calendarC.querier)
+	events, err := eventM.List()
 	if err != nil {
-		log.Println(err)
-		http.Error(w, "Calendar could not be generated. Please try again later.", http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	w.Header().Set("Content-type", "text/calendar")

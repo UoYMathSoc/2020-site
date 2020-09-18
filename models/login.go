@@ -2,7 +2,7 @@ package models
 
 import (
 	"fmt"
-	"gorm.io/gorm"
+	"github.com/UoYMathSoc/2020-site/database"
 )
 
 type LoginModel struct {
@@ -10,24 +10,16 @@ type LoginModel struct {
 }
 
 // NewLoginModel returns a new UserModel with access to the database
-func NewLoginModel(db *gorm.DB) *LoginModel {
-	return &LoginModel{Model: Model{database: db}}
+func NewLoginModel(q *database.Queries) *LoginModel {
+	return &LoginModel{Model{q}}
 }
 
 // Post attempts to log in a user using the credentials given
 func (m *LoginModel) Post(username string, password string) error {
-	user := NewUserModel(m.database)
-	err := user.Register(username, password)
-	if err != nil {
-		return fmt.Errorf("Unable to register user: %w", err)
-	}
-	err = user.Get(username)
-	if err != nil {
-		return err
-	}
-	err = user.Validate(password)
+	userM := NewUserModel(m.querier)
+	_, err := userM.Validate(username, password)
 	if err != nil {
 		return fmt.Errorf("could not validate user's credentails: %w", err)
 	}
-	return err
+	return nil
 }

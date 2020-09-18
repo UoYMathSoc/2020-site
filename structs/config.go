@@ -5,15 +5,23 @@ package structs
 // See the comments for Server, Database and PageContext for more details.
 type Config struct {
 	Server      Server      `toml:"server"`
+	Database    Database    `toml:"database"`
 	PageContext PageContext `toml:"pageContext"`
 }
 
 // Server is a structure containing server configuration.
 type Server struct {
-	Address  string `toml:"address"`
+	Address string `toml:"address"`
+	Port    int    `toml:"port"`
+	Timeout int    `toml:"timeout"`
+}
+
+type Database struct {
+	Host     string `toml:"host"`
 	Port     int    `toml:"port"`
-	Timeout  int    `toml:"timeout"`
-	Database string `toml:"database"`
+	User     string `toml:"user"`
+	Password string `toml:"password"`
+	Name     string `toml:"name"`
 }
 
 // PageContext is a structure containing static information to provide

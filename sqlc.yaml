@@ -1,0 +1,10 @@
+version: "1"
+packages:
+  - name: "database"
+    path: "database"
+    queries: "postgresql/query"
+    schema: "postgresql/schema"
+    engine: "postgresql"
+    emit_interface: true
+rename:
+  committee: "Position"

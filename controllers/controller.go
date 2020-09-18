@@ -3,13 +3,13 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/UoYMathSoc/2020-site/database"
 	"github.com/UoYMathSoc/2020-site/structs"
-	"gorm.io/gorm"
 )
 
 type Controller struct {
-	config   *structs.Config
-	database *gorm.DB
+	config  *structs.Config
+	querier *database.Queries
 }
 
 // ControllerInterface defines the methods all controllers must implement.

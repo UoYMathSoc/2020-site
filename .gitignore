@@ -26,3 +26,4 @@
 
 # Database files
 *.db
+/database/

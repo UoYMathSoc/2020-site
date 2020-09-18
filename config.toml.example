@@ -13,7 +13,14 @@
 	address	 = "localhost"
 	port     = 3000
 	timeout	 = 0
-	database = "database.db"
+
+# This is the config for the database
+[database]
+	host     = "localhost"
+	port     = 5432
+	user     = "postgres"
+	password = "password"
+	name     = "postgres"
 
 # This is data that will be passed into all templates
 [pageContext]

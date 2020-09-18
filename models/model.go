@@ -1,10 +1,9 @@
 package models
 
 import (
-	"gorm.io/gorm"
+	"github.com/UoYMathSoc/2020-site/database"
 )
 
 type Model struct {
-	gorm.Model
-	database *gorm.DB
+	querier *database.Queries
 }

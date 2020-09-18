@@ -1,85 +1,63 @@
 package models
 
 import (
-	"errors"
+	"context"
 	"fmt"
+	"github.com/UoYMathSoc/2020-site/database"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 // UserModel is used when accessing the site's users
 type UserModel struct {
 	Model
-	Username       string
-	hashedPassword []byte
 }
-
-type Users []UserModel
 
 // NewUserModel returns a new UserModel with access to the database
-func NewUserModel(db *gorm.DB) *UserModel {
-	return &UserModel{Model: Model{database: db}}
+func NewUserModel(q *database.Queries) *UserModel {
+	return &UserModel{Model{q}}
 }
 
-// Get populates a user's UserModel. Its uses user's username unless one is provided as a parameter
-func (user *UserModel) Get(usernames ...string) error {
-	if len(usernames) > 0 {
-		user.Username = usernames[0]
+func (m *UserModel) Get(id int32) (*database.User, []database.Position, error) {
+	user, err := m.querier.GetUser(context.Background(), id)
+	if err != nil {
+		return &user, nil, err
 	}
-	username := user.Username
-	if user.read().Username == username {
-		return nil
+
+	positions, err := m.querier.GetUserPositions(context.Background(), id)
+	if err != nil {
+		return &user, positions, err
 	}
-	return errors.New("could not find specified user in the database")
+
+	return &user, positions, nil
 }
 
-//func (user *UserModel) GetUsers() (users *[]UserModel, err error) {
-//	user.database.Find(users)
-//	for _, thisUser := range *users {
-//		thisUser.database = user.database
-//	}
-//	return users, err
-//}
-
-func (user *UserModel) Register(username string, password string) error {
-	user.Username = username
-	err := user.Get()
-	if err == nil {
-		return errors.New("user already exists")
+func (m *UserModel) Register(username string, password string) error {
+	id, err := m.querier.CreateUser(context.Background(), username)
+	if err != nil {
+		return fmt.Errorf("could not create user: %w", err)
 	}
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+	hashedPass, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
 	if err != nil {
 		return fmt.Errorf("could not generate hash for provided password: %w", err)
 	}
-	user.hashedPassword = hashedPassword
-	user.create()
-	err = user.Get()
+	err = m.querier.SetUsersPass(context.Background(), database.SetUsersPassParams{
+		ID:       id,
+		Password: string(hashedPass),
+	})
 	if err != nil {
-		return errors.New("could not add user to database")
+		return fmt.Errorf("could not set provided password: %w", err)
 	}
 	return nil
 }
 
-func (user *UserModel) Validate(password string) error {
-	return bcrypt.CompareHashAndPassword(user.hashedPassword, []byte(password))
-}
-
-func (user *UserModel) create() *UserModel {
-	user.database.Create(&user)
-	return user
-}
-
-func (user *UserModel) read() *UserModel {
-	user.database.Where("username = ?", user.Username).Find(user)
-	return user
-}
-
-func (user *UserModel) update() *UserModel {
-	user.database.Where("username = ?", user.Username).Updates(user)
-	return user
-}
-
-func (user *UserModel) delete() *UserModel {
-	user.database.Where("username = ?", user.Username).Delete(&user)
-	return user
+func (m *UserModel) Validate(username string, password string) (int32, error) {
+	id, err := m.querier.FindUserUsername(context.Background(), username)
+	if err != nil {
+		return id, fmt.Errorf("could not find user: %w", err)
+	}
+	userPass, err := m.querier.GetUsersPass(context.Background(), id)
+	if err != nil {
+		return id, fmt.Errorf("could not find the password for specified user: %w", err)
+	}
+	return id, bcrypt.CompareHashAndPassword([]byte(userPass.Password), []byte(password))
 }
