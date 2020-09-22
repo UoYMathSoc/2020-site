@@ -45,6 +45,9 @@ func NewServer(c *structs.Config) (*Server, error) {
 	userC := controllers.NewUserController(c, q)
 	getRouter.HandleFunc("/user/{id}", userC.Get)
 
+	eventC := controllers.NewEventController(c, q)
+	getRouter.HandleFunc("/events/{id}", eventC.Get)
+
 	calendarC := controllers.NewCalendarController(c, q)
 	getRouter.HandleFunc("/calendar/ical/MathSoc.ics", calendarC.GetICal)
 

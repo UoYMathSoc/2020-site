@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/UoYMathSoc/2020-site/utils"
 	"net/http"
 	"strconv"
 
@@ -37,19 +38,17 @@ func (userC *UserController) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//data := struct {
-	//	User           *database.User
-	//	Positions   	[]database.Position
-	//}{
-	//	User:           user,
-	//	Positions:  	positions,
-	//}
-	//
-	//err = utils.RenderTemplates(w, userC.config.PageContext, data, "user.gohtml")
-	//if err != nil {
-	//	fmt.Println(err)
-	//	return
-	//}
+	data := struct {
+		User      *database.User
+		Positions []database.Position
+	}{
+		User:      user,
+		Positions: positions,
+	}
 
-	fmt.Fprintf(w, "Hello, %s", user.Name)
+	err = utils.RenderContent(w, userC.config.PageContext, data, "user.gohtml")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 }

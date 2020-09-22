@@ -5,38 +5,48 @@ import (
 	"html/template"
 	"net/http"
 	"path/filepath"
+	"strings"
 
 	"github.com/UoYMathSoc/2020-site/structs"
 )
 
-const TemplatePrefix = "views"
+const (
+	TemplatePrefix = "views"
+	AdminPrefix    = "internal"
+)
 
 var BaseTemplates = []string{
-	"partials/base.gohtml",
 	"partials/header.gohtml",
-}
-
-// Think of better variable name
-var OtherTemplates = []string{
 	"partials/footer.gohtml",
 	"elements/navbar.gohtml",
+	"partials/base.gohtml",
+}
+
+var AdminTemplates = []string{
+	"partials/header.gohtml",
+	"partials/footer.gohtml",
+	"elements/adminbar.gohtml",
+	"partials/base.gohtml",
 }
 
 func RenderContent(w http.ResponseWriter, context structs.PageContext, data interface{}, content string) error {
-	templates := append(OtherTemplates, content)
+	if strings.HasPrefix(content, AdminPrefix+"/") {
+		templates := append(AdminTemplates, content)
+		return RenderTemplates(w, context, data, templates...)
+	}
+	templates := append(BaseTemplates, content)
 	return RenderTemplates(w, context, data, templates...)
 }
 
 func RenderTemplates(w http.ResponseWriter, context structs.PageContext, data interface{}, templates ...string) error {
 	var err error
-	var templatePaths []string
-	templates = append(BaseTemplates, templates...)
 
 	td := structs.Globals{
 		PageContext: context,
 		PageData:    data,
 	}
 
+	var templatePaths []string
 	for _, template := range templates {
 		templatePaths = append(templatePaths, filepath.Join(TemplatePrefix, template))
 	}

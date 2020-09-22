@@ -18,6 +18,10 @@ func (m EventModel) List() (Events, error) {
 	return m.querier.ListEvents(context.Background())
 }
 
+func (m EventModel) Get(id int32) (database.Event, error) {
+	return m.querier.GetEvent(context.Background(), id)
+}
+
 type Events []database.Event
 
 func (events Events) EmitICal() goics.Componenter {

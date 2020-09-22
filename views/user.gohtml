@@ -1,0 +1,38 @@
+{{define "title"}}{{.PageContext.ShortName}} | {{.PageData.User.Name}}{{end}}
+
+{{define "content"}}
+  {{with.PageData}}
+    <section class="bg-light">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 col-xs-12 col-sm-6 col-lg-4">
+            <img class="rounded-circle img-fluid" src="https://picsum.photos/200/200?random=1" alt="Card image">
+          </div>
+          <div class="col-md-8 col-xs-12 col-sm-6 col-lg-8">
+            <div class="container">
+              <h2>{{.User.Name}}</h2>
+              <b>{{(index .Positions 0).Name.String}}</b>
+              <hr>
+              <ul class="container list-unstyled">
+                <li><span style="color: Mediumslateblue;" class="fas fa-user fa-lg" aria-hidden="true"></span>{{.User.Username}}</li>
+                <li><span style="color: Mediumslateblue;" class="fas fa-envelope fa-lg" aria-hidden="true"></span>{{(index .Positions 0).Alias}}@york.ac.uk</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8 col-xs-12 col-sm-6 col-lg-8">
+            {{.User.Bio.String}}
+          </div>
+          <div class="col-md-4 col-xs-12 col-sm-6 col-lg-4">
+            <ul class="container">
+              {{range .Positions}}
+              <li><b>{{.Name.String}}</b> since Mar 2017</li>
+              {{end}}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  {{end}}
+{{end}}

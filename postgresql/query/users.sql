@@ -8,8 +8,8 @@ FROM users
 WHERE id = $1;
 
 -- name: CreateUser :one
-INSERT INTO users (username)
-VALUES ($1)
+INSERT INTO users (username, name)
+VALUES ($1, $1)
 RETURNING id;
 
 -- name: UpdateUserName :exec
