@@ -18,39 +18,5 @@
 # Config files
 *.toml
 
-#  GoLand
-## User-specific stuff
-.idea/**/workspace.xml
-.idea/**/tasks.xml
-.idea/**/usage.statistics.xml
-.idea/**/dictionaries
-.idea/**/shelf
-
-## Generated files
-.idea/**/contentModel.xml
-
-## Sensitive or high-churn files
-.idea/**/dataSources/
-.idea/**/dataSources.ids
-.idea/**/dataSources.local.xml
-.idea/**/sqlDataSources.xml
-.idea/**/dynamic.xml
-.idea/**/uiDesigner.xml
-.idea/**/dbnavigator.xml
-
-## Go Modules
-.idea/artifacts
-.idea/compiler.xml
-.idea/jarRepositories.xml
-.idea/modules.xml
-.idea/*.iml
-.idea/modules
-*.iml
-*.ipr
- 
-## Rest Client
-.idea/httpRequests
-
-# Database files
-*.db
-/database/
+# GoLand files
+.idea/
