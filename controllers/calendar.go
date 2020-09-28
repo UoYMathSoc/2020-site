@@ -1,13 +1,13 @@
 package controllers
 
 import (
-	"bytes"
+	"fmt"
+	"github.com/UoYMathSoc/2020-site/utils"
 	"net/http"
 
 	"github.com/UoYMathSoc/2020-site/database"
 	"github.com/UoYMathSoc/2020-site/models"
 	"github.com/UoYMathSoc/2020-site/structs"
-	"github.com/randoomjd/goics"
 )
 
 type CalendarController struct {
@@ -31,8 +31,15 @@ func (calendarC *CalendarController) GetICal(w http.ResponseWriter, r *http.Requ
 	w.Header().Set("Content-Disposition", "inline")
 	w.Header().Set("filename", "mathsoc.ics")
 
-	b := bytes.Buffer{}
-	goics.NewICalEncode(&b).Encode(events)
-	w.WriteHeader(http.StatusOK)
-	w.Write(b.Bytes())
+	data := struct {
+		Events []database.Event
+	}{
+		Events: events,
+	}
+
+	err = utils.RenderICal(w, data, "ical.tmpl")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 }
