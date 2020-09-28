@@ -10,7 +10,6 @@ import (
 type Event struct {
 	ID          int32
 	Name        string
-	Key         string
 	Date        time.Time
 	StartTime   time.Time
 	EndTime     sql.NullTime
