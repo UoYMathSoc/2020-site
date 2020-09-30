@@ -5,5 +5,5 @@ import (
 )
 
 type Model struct {
-	querier *database.Queries
+	querier database.Querier
 }

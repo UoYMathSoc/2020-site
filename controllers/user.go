@@ -25,8 +25,8 @@ func (userC *UserController) Get(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
 
-	userM := models.NewUserModel(userC.querier)
-	user, positions, err := userM.Get(int32(id))
+	user, err := userC.session.GetUser(id)
+	positions, err := userC.session.GetUserPositions(id)
 	if len(positions) == 0 {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
@@ -39,8 +39,8 @@ func (userC *UserController) Get(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		User      *database.User
-		Positions []database.Position
+		User      *models.User
+		Positions []models.Position
 	}{
 		User:      user,
 		Positions: positions,

@@ -2,9 +2,11 @@ package models
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"github.com/UoYMathSoc/2020-site/database"
 	"golang.org/x/crypto/bcrypt"
+	"time"
 )
 
 // UserModel is used when accessing the site's users
@@ -12,12 +14,60 @@ type UserModel struct {
 	Model
 }
 
-// NewUserModel returns a new UserModel with access to the database
-func NewUserModel(q *database.Queries) *UserModel {
-	return &UserModel{Model{q}}
+type User struct {
+	ID       int
+	Username string
+	Name     string
+	Bio      string
 }
 
-func (m *UserModel) Get(id int32) (*database.User, []database.Position, error) {
+type Position struct {
+	ID       int
+	Name     string
+	Alias    string
+	FromDate time.Time
+	TillDate time.Time
+}
+
+func (s *Session) GetUser(id int) (*User, error) {
+	user, err := s.querier.GetUser(context.Background(), int32(id))
+	if err != nil {
+		return nil, err
+	}
+
+	return &User{
+		ID:       int(user.ID),
+		Username: user.Username,
+		Name:     user.Name,
+		Bio:      user.Bio.String,
+	}, nil
+}
+
+func (s *Session) GetUserPositions(id int) ([]Position, error) {
+	positions, err := s.querier.GetUserPositions(context.Background(), int32(id))
+	if err != nil {
+		return nil, err
+	}
+
+	var result []Position
+	for _, position := range positions {
+		p, err := s.querier.GetPosition(context.Background(), position.CommitteeID)
+		if err != nil {
+			break
+		}
+		position := Position{
+			ID:       int(p.ID),
+			Name:     p.Name.String,
+			Alias:    p.Alias,
+			FromDate: position.FromDate,
+			TillDate: position.TillDate.Time,
+		}
+		result = append(result, position)
+	}
+	return result, nil
+}
+
+func (m *UserModel) Get(id int32) (*database.User, *Position, error) {
 	user, err := m.querier.GetUser(context.Background(), id)
 	if err != nil {
 		return &user, nil, err
@@ -25,8 +75,10 @@ func (m *UserModel) Get(id int32) (*database.User, []database.Position, error) {
 
 	positions, err := m.querier.GetUserPositions(context.Background(), id)
 	if err != nil {
-		return &user, positions, err
+		return &user, nil, err
 	}
+
+	userPositions, err := m.querier.GetUserPosition
 
 	return &user, positions, nil
 }
