@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"github.com/UoYMathSoc/2020-site/database"
 	"time"
 )
 
@@ -26,6 +27,7 @@ func (s *Session) GetUser(id int) (*User, error) {
 		return nil, err
 	}
 
+	sanitiseUser(&user)
 	return &User{
 		ID:       int(user.ID),
 		Username: user.Username,
@@ -56,4 +58,10 @@ func (s *Session) GetUserPositions(id int) ([]Position, error) {
 		result = append(result, position)
 	}
 	return result, nil
+}
+
+func sanitiseUser(user *database.User) {
+	if !user.Bio.Valid {
+		user.Bio.String = ""
+	}
 }

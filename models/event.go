@@ -22,7 +22,7 @@ func (s *Session) ListEvents() ([]Event, error) {
 	}
 	var result []Event
 	for _, event := range events {
-		patchEvent(&event)
+		sanitiseEvent(&event)
 
 		startDate := event.Date.Add(event.StartTime.Sub(event.StartTime.Truncate(time.Hour * 24)))
 		endDate := event.Date.Add(event.EndTime.Time.Sub(event.EndTime.Time.Truncate(time.Hour * 24)))
@@ -45,7 +45,7 @@ func (s *Session) GetEvent(id int) (*Event, error) {
 		return nil, err
 	}
 
-	patchEvent(&event)
+	sanitiseEvent(&event)
 
 	startDate := event.Date.Add(event.StartTime.Sub(event.StartTime.Truncate(time.Hour * 24)))
 	endDate := event.Date.Add(event.EndTime.Time.Sub(event.EndTime.Time.Truncate(time.Hour * 24)))
@@ -59,14 +59,18 @@ func (s *Session) GetEvent(id int) (*Event, error) {
 	}, nil
 }
 
-func patchEvent(event *database.Event) {
+// Maybe use sql defaults?
+func sanitiseEvent(event *database.Event) {
 	if !event.EndTime.Valid {
 		event.EndTime.Time = event.StartTime.Add(time.Hour)
+		event.EndTime.Valid = true
 	}
 	if !event.Description.Valid {
 		event.Description.String = ""
+		event.Description.Valid = true
 	}
 	if !event.Location.Valid {
 		event.Location.String = ""
+		event.Location.Valid = true
 	}
 }

@@ -31,10 +31,10 @@ func (eventC *EventController) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//if !event.EndTime.Valid {
-	//	event.EndTime.Time = event.StartTime.Add(time.Hour)
-	//	event.EndTime.Valid = true
-	//}
+	fmt.Fprintf(w, "%s\n", event.Name)
+	fmt.Fprintf(w, "%s-%s\n", event.StartDate.String(), event.EndDate.String())
+	fmt.Fprintf(w, "Location: %s\n", event.Location)
+	fmt.Fprintf(w, "%s/n", event.Description)
 
 	//fmt.Fprintf(w, "%s\n", event.Name)
 	//fmt.Fprintf(w, "We are going to %s on %s, so get ready!\n", event.Location.String, event.Date.Weekday())
