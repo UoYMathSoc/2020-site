@@ -24,21 +24,20 @@ func (eventC *EventController) Get(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
 
-	eventM := models.NewEventModel(eventC.querier)
-	event, err := eventM.Get(int32(id))
+	event, err := eventC.session.GetEvent(id)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	if !event.EndTime.Valid {
-		event.EndTime.Time = event.StartTime.Add(time.Hour)
-		event.EndTime.Valid = true
-	}
+	//if !event.EndTime.Valid {
+	//	event.EndTime.Time = event.StartTime.Add(time.Hour)
+	//	event.EndTime.Valid = true
+	//}
 
-	fmt.Fprintf(w, "%s\n", event.Name)
-	fmt.Fprintf(w, "We are going to %s on %s, so get ready!\n", event.Location.String, event.Date.Weekday())
-	fmt.Fprintf(w, "%s\n", event.Description.String)
-	fmt.Fprintf(w, "%d:%d-%d:%d", event.StartTime.Hour(), event.StartTime.Minute(), event.EndTime.Time.Hour(), event.EndTime.Time.Minute())
+	//fmt.Fprintf(w, "%s\n", event.Name)
+	//fmt.Fprintf(w, "We are going to %s on %s, so get ready!\n", event.Location.String, event.Date.Weekday())
+	//fmt.Fprintf(w, "%s\n", event.Description.String)
+	//fmt.Fprintf(w, "%d:%d-%d:%d", event.StartTime.Hour(), event.StartTime.Minute(), event.EndTime.Time.Hour(), event.EndTime.Time.Minute())
 }

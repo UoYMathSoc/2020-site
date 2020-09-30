@@ -19,8 +19,7 @@ func NewCalendarController(c *structs.Config, q *database.Queries) *CalendarCont
 }
 
 func (calendarC *CalendarController) GetICal(w http.ResponseWriter, r *http.Request) {
-	eventM := models.NewEventModel(calendarC.querier)
-	events, err := eventM.List()
+	events, err := calendarC.session.ListEvents()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -32,7 +31,7 @@ func (calendarC *CalendarController) GetICal(w http.ResponseWriter, r *http.Requ
 	w.Header().Set("filename", "mathsoc.ics")
 
 	data := struct {
-		Events []database.Event
+		Events []models.Event
 	}{
 		Events: events,
 	}
