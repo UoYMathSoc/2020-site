@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/UoYMathSoc/2020-site/controllers"
 	"github.com/UoYMathSoc/2020-site/database"
 	"github.com/UoYMathSoc/2020-site/structs"
@@ -54,6 +55,8 @@ func NewServer(c *structs.Config) (*Server, error) {
 	staticC := controllers.NewStaticController(c)
 	getRouter.HandleFunc("/", staticC.GetIndex)
 	getRouter.HandleFunc("/about/", staticC.GetAbout)
+	getRouter.HandleFunc("/committee", staticC.GetCommittee)
+	getRouter.HandleFunc("/contact", staticC.GetContact)
 	getRouter.HandleFunc("/login/", staticC.GetLogin)
 	// End routes
 
