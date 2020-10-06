@@ -2,10 +2,10 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/UoYMathSoc/2020-site/utils"
 	"net/http"
 
-	"github.com/UoYMathSoc/2020-site/database"
+	"github.com/UoYMathSoc/2020-site/utils"
+
 	"github.com/UoYMathSoc/2020-site/models"
 	"github.com/UoYMathSoc/2020-site/structs"
 )
@@ -14,8 +14,8 @@ type CalendarController struct {
 	Controller
 }
 
-func NewCalendarController(c *structs.Config, q *database.Queries) *CalendarController {
-	return &CalendarController{Controller{config: c, querier: q}}
+func NewCalendarController(c *structs.Config, s *models.Session) *CalendarController {
+	return &CalendarController{Controller{config: c, session: s}}
 }
 
 func (calendarC *CalendarController) GetICal(w http.ResponseWriter, r *http.Request) {

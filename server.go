@@ -1,10 +1,8 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
 	"github.com/UoYMathSoc/2020-site/controllers"
-	"github.com/UoYMathSoc/2020-site/database"
+	"github.com/UoYMathSoc/2020-site/models"
 	"github.com/UoYMathSoc/2020-site/structs"
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
@@ -27,28 +25,19 @@ func NewServer(c *structs.Config) (*Server, error) {
 	postRouter := router.Methods("POST").Subrouter()
 	//headRouter := router.Methods("HEAD").Subrouter()
 
-	db := c.Database
-	dsn := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		db.Host, db.Port, db.User, db.Password, db.Name)
-	conn, err := sql.Open("postgres", dsn)
-	if err != nil {
-		panic(err)
-	}
-
-	q := database.New(conn)
+	session := models.NewSessionFromConfig(c.Database)
 
 	// Routes go in here
-	loginC := controllers.NewLoginController(c, q)
+	loginC := controllers.NewLoginController(c, session)
 	postRouter.HandleFunc("/login/", loginC.Post)
 
-	userC := controllers.NewUserController(c, q)
+	userC := controllers.NewUserController(c, session)
 	getRouter.HandleFunc("/user/{id}", userC.Get)
 
-	eventC := controllers.NewEventController(c, q)
+	eventC := controllers.NewEventController(c, session)
 	getRouter.HandleFunc("/events/{id}", eventC.Get)
 
-	calendarC := controllers.NewCalendarController(c, q)
+	calendarC := controllers.NewCalendarController(c, session)
 	getRouter.HandleFunc("/calendar/ical/MathSoc.ics", calendarC.GetICal)
 
 	staticC := controllers.NewStaticController(c)

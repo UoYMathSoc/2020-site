@@ -2,8 +2,11 @@ package models
 
 import (
 	"context"
-	"github.com/UoYMathSoc/2020-site/database"
+	"fmt"
 	"time"
+
+	"github.com/UoYMathSoc/2020-site/database"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
@@ -60,8 +63,22 @@ func (s *Session) GetUserPositions(id int) ([]Position, error) {
 	return result, nil
 }
 
+func (s *Session) ValidateUser(username, password string) (int, error) {
+	id, err := s.querier.FindUserUsername(context.Background(), username)
+	if err != nil {
+		return -1, fmt.Errorf("could not find user: %w", err)
+	}
+	creds, err := s.querier.GetUsersPass(context.Background(), id)
+	err = bcrypt.CompareHashAndPassword([]byte(creds.Password), []byte(password))
+	if err != nil {
+		return -1, fmt.Errorf("could not validate user: %w", err)
+	}
+	return int(id), nil
+}
+
 func sanitiseUser(user *database.User) {
 	if !user.Bio.Valid {
 		user.Bio.String = ""
+		user.Bio.Valid = true
 	}
 }

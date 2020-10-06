@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/UoYMathSoc/2020-site/database"
 	"github.com/UoYMathSoc/2020-site/structs"
 )
