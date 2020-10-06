@@ -1,15 +1,15 @@
 package controllers
 
 import (
+	"github.com/UoYMathSoc/2020-site/models"
 	"net/http"
 
-	"github.com/UoYMathSoc/2020-site/database"
 	"github.com/UoYMathSoc/2020-site/structs"
 )
 
 type Controller struct {
 	config  *structs.Config
-	querier *database.Queries
+	session *models.Session
 }
 
 // ControllerInterface defines the methods all controllers must implement.

@@ -26,6 +26,15 @@ type Position struct {
 	Executive   sql.NullBool
 }
 
+type Post struct {
+	ID      int32
+	Date    time.Time
+	Title   string
+	Body    sql.NullString
+	EventID int32
+	Link    sql.NullString
+}
+
 type User struct {
 	ID       int32
 	Username string

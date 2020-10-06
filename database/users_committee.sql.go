@@ -8,27 +8,26 @@ import (
 )
 
 const getPositionUsers = `-- name: GetPositionUsers :many
-SELECT users.id, users.username, users.name, users.bio
-FROM users
-    INNER JOIN users_committee uc on users.id = uc.user_id
-    INNER JOIN committee c on uc.committee_id = c.id
-WHERE c.id = $1
+SELECT id, user_id, committee_id, from_date, till_date
+FROM users_committee
+WHERE committee_id = $1
 `
 
-func (q *Queries) GetPositionUsers(ctx context.Context, id int32) ([]User, error) {
-	rows, err := q.db.QueryContext(ctx, getPositionUsers, id)
+func (q *Queries) GetPositionUsers(ctx context.Context, committeeID int32) ([]UsersCommittee, error) {
+	rows, err := q.db.QueryContext(ctx, getPositionUsers, committeeID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []User
+	var items []UsersCommittee
 	for rows.Next() {
-		var i User
+		var i UsersCommittee
 		if err := rows.Scan(
 			&i.ID,
-			&i.Username,
-			&i.Name,
-			&i.Bio,
+			&i.UserID,
+			&i.CommitteeID,
+			&i.FromDate,
+			&i.TillDate,
 		); err != nil {
 			return nil, err
 		}
@@ -44,29 +43,26 @@ func (q *Queries) GetPositionUsers(ctx context.Context, id int32) ([]User, error
 }
 
 const getUserPositions = `-- name: GetUserPositions :many
-SELECT committee.id, committee.name, committee.alias, committee.ordering, committee.description, committee.executive
-FROM committee
-    INNER JOIN users_committee uc on committee.id = uc.committee_id
-    INNER JOIN users u on uc.user_id = u.id
-WHERE u.id = $1
+SELECT id, user_id, committee_id, from_date, till_date
+FROM users_committee
+WHERE user_id = $1
 `
 
-func (q *Queries) GetUserPositions(ctx context.Context, id int32) ([]Position, error) {
-	rows, err := q.db.QueryContext(ctx, getUserPositions, id)
+func (q *Queries) GetUserPositions(ctx context.Context, userID int32) ([]UsersCommittee, error) {
+	rows, err := q.db.QueryContext(ctx, getUserPositions, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Position
+	var items []UsersCommittee
 	for rows.Next() {
-		var i Position
+		var i UsersCommittee
 		if err := rows.Scan(
 			&i.ID,
-			&i.Name,
-			&i.Alias,
-			&i.Ordering,
-			&i.Description,
-			&i.Executive,
+			&i.UserID,
+			&i.CommitteeID,
+			&i.FromDate,
+			&i.TillDate,
 		); err != nil {
 			return nil, err
 		}

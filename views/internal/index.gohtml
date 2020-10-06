@@ -1,0 +1,22 @@
+{{define "content"}}
+{{with .PageData}}
+<section class="bg-light">
+    <div class="container">
+        <div class="row">
+            {{range .Columns}}
+            <div class="col-md-4">
+                <h2>{{.Name}}</h2>
+                {{range .Sections}}
+                <h3>{{.Name}}</h3>
+                <ul>
+                    {{range .Actions}}
+                    <li><a href="{{.link}}">{{.Name}}</a></li>
+                    {{end}}
+                </ul>
+                {{end}}
+            </div>
+            {{end}}
+        </div>
+    </div>
+</section>
+{{end}}

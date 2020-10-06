@@ -3,61 +3,82 @@ package models
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/UoYMathSoc/2020-site/database"
 	"golang.org/x/crypto/bcrypt"
 )
 
-// UserModel is used when accessing the site's users
-type UserModel struct {
-	Model
+type User struct {
+	ID       int
+	Username string
+	Name     string
+	Bio      string
 }
 
-// NewUserModel returns a new UserModel with access to the database
-func NewUserModel(q *database.Queries) *UserModel {
-	return &UserModel{Model{q}}
+type Position struct {
+	ID       int
+	Name     string
+	Alias    string
+	FromDate time.Time
+	TillDate time.Time
 }
 
-func (m *UserModel) Get(id int32) (*database.User, []database.Position, error) {
-	user, err := m.querier.GetUser(context.Background(), id)
+func (s *Session) GetUser(id int) (*User, error) {
+	user, err := s.querier.GetUser(context.Background(), int32(id))
 	if err != nil {
-		return &user, nil, err
+		return nil, err
 	}
 
-	positions, err := m.querier.GetUserPositions(context.Background(), id)
-	if err != nil {
-		return &user, positions, err
-	}
-
-	return &user, positions, nil
+	sanitiseUser(&user)
+	return &User{
+		ID:       int(user.ID),
+		Username: user.Username,
+		Name:     user.Name,
+		Bio:      user.Bio.String,
+	}, nil
 }
 
-func (m *UserModel) Register(username string, password string) error {
-	id, err := m.querier.CreateUser(context.Background(), username)
+func (s *Session) GetUserPositions(id int) ([]Position, error) {
+	positions, err := s.querier.GetUserPositions(context.Background(), int32(id))
 	if err != nil {
-		return fmt.Errorf("could not create user: %w", err)
+		return nil, err
 	}
-	hashedPass, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
-	if err != nil {
-		return fmt.Errorf("could not generate hash for provided password: %w", err)
+
+	var result []Position
+	for _, position := range positions {
+		p, err := s.querier.GetPosition(context.Background(), position.CommitteeID)
+		if err != nil {
+			break
+		}
+		position := Position{
+			ID:       int(p.ID),
+			Name:     p.Name.String,
+			Alias:    p.Alias,
+			FromDate: position.FromDate,
+			TillDate: position.TillDate.Time,
+		}
+		result = append(result, position)
 	}
-	err = m.querier.SetUsersPass(context.Background(), database.SetUsersPassParams{
-		ID:       id,
-		Password: string(hashedPass),
-	})
-	if err != nil {
-		return fmt.Errorf("could not set provided password: %w", err)
-	}
-	return nil
+	return result, nil
 }
 
-func (m *UserModel) Validate(username string, password string) (int32, error) {
-	id, err := m.querier.FindUserUsername(context.Background(), username)
+func (s *Session) ValidateUser(username, password string) (int, error) {
+	id, err := s.querier.FindUserUsername(context.Background(), username)
 	if err != nil {
-		return id, fmt.Errorf("could not find user: %w", err)
+		return -1, fmt.Errorf("could not find user: %w", err)
 	}
-	userPass, err := m.querier.GetUsersPass(context.Background(), id)
+	creds, err := s.querier.GetUsersPass(context.Background(), id)
+	err = bcrypt.CompareHashAndPassword([]byte(creds.Password), []byte(password))
 	if err != nil {
-		return id, fmt.Errorf("could not find the password for specified user: %w", err)
+		return -1, fmt.Errorf("could not validate user: %w", err)
 	}
-	return id, bcrypt.CompareHashAndPassword([]byte(userPass.Password), []byte(password))
+	return int(id), nil
+}
+
+func sanitiseUser(user *database.User) {
+	if !user.Bio.Valid {
+		user.Bio.String = ""
+		user.Bio.Valid = true
+	}
 }
