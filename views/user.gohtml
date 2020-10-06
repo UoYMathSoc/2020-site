@@ -2,36 +2,54 @@
 
 {{define "content"}}
   {{with.PageData}}
-    <section class="bg-light">
+    <section>
+      <div class="jumbotron"
+        style="height: 220px; background-image:url(../public/images/mathsoc.jpg); background-size: cover; background-blend-mode: soft-light; background-position: center;">
+        <div class="container">
+          <h1 style="color: #613b7a; font-size: xxx-large;
+    font-weight: bold;">{{.User.Name}}</h1>
+          <h3>{{(index .Positions 0).Name}}</h3>
+        </div>
+      </div>
       <div class="container">
-        <div class="row">
-          <div class="col-md-4 col-xs-12 col-sm-6 col-lg-4">
-            <img class="rounded-circle img-fluid" src="https://picsum.photos/200/200?random=1" alt="Card image">
-          </div>
-          <div class="col-md-8 col-xs-12 col-sm-6 col-lg-8">
-            <div class="container">
-              <h2>{{.User.Name}}</h2>
-              <b>{{(index .Positions 0).Name.String}}</b>
-              <hr>
-              <ul class="container list-unstyled">
-                <li><span style="color: Mediumslateblue;" class="fas fa-user fa-lg" aria-hidden="true"></span>{{.User.Username}}</li>
-                <li><span style="color: Mediumslateblue;" class="fas fa-envelope fa-lg" aria-hidden="true"></span>{{(index .Positions 0).Alias}}@york.ac.uk</li>
+        <div class="row" style="place-content: center;">
+          <div style="text-align: center;">
+            <img class="rounded-circle img-fluid" src="https://picsum.photos/200/200?random=1" alt="{{.User.Name}}">
+            <p style="font-size: large; padding-top: 2rem;">{{.User.Bio}}</p>  
+        </div>
+        </div>
+    
+    
+        <div class="row" style="text-align: center; padding-top: 2rem; padding-bottom: 1rem;">
+          <div class="col-6">
+            <h2 style="color: #613b7a;">
+              Committee Roles
+            </h2>
+            <p style="font-size: large;">
+              <ul class="list-unstyled">
+                {{range .Positions}}
+                <li style="padding-top: 1rem;"><b style="color: #613b7a;">{{.Name}}</b> since Feb 2020</li>
+                {{end}}
               </ul>
-            </div>
+            </p>
+          </div>
+          <div class="col-6">
+    
+            <h2 style="color: #613b7a;">
+              Contact Details
+            </h2>
+            <p style="font-size: large;">
+              <ul class="list-unstyled">
+                <li><span style="color: #9067a9; padding-right: 1rem;" class="fas fa-user fa-lg"
+                    style=" vertical-align: middle;"></span>{{.User.Username}}</li>
+                <li><span style="color: #9067a9; padding-right: 1rem; padding-top: 1rem;" class="fas fa-envelope fa-lg"
+                    style=" vertical-align: middle;"></span>{{(index .Positions 0).Alias}}@york.ac.uk</li>
+              </ul>
+            </p>
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-8 col-xs-12 col-sm-6 col-lg-8">
-            {{.User.Bio.String}}
-          </div>
-          <div class="col-md-4 col-xs-12 col-sm-6 col-lg-4">
-            <ul class="container">
-              {{range .Positions}}
-              <li><b>{{.Name.String}}</b> since Mar 2017</li>
-              {{end}}
-            </ul>
-          </div>
-        </div>
+    
+      </div>
       </div>
     </section>
   {{end}}

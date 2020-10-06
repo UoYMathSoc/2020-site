@@ -31,6 +31,10 @@ func (staticC *StaticController) GetAbout(w http.ResponseWriter, r *http.Request
 	staticC.Get(w, r, "about.gohtml")
 }
 
+func (staticC *StaticController) GetCommittee(w http.ResponseWriter, r *http.Request) {
+	staticC.Get(w, r, "committee.gohtml")
+}
+
 func (staticC *StaticController) GetContact(w http.ResponseWriter, r *http.Request) {
 	staticC.Get(w, r, "contact.gohtml")
 }

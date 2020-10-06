@@ -2,10 +2,11 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/UoYMathSoc/2020-site/utils"
 	"net/http"
 	"strconv"
 
+	"github.com/UoYMathSoc/2020-site/utils"
+	"github.com/UoYMathSoc/2020-site/database"
 	"github.com/UoYMathSoc/2020-site/models"
 	"github.com/UoYMathSoc/2020-site/structs"
 	"github.com/gorilla/mux"
@@ -21,9 +22,9 @@ func NewUserController(c *structs.Config, s *models.Session) *UserController {
 }
 
 func (userC *UserController) Get(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, _ := strconv.Atoi(vars["id"])
-
+	vars := mux.Vars(r){
+  id, _ := strconv.Atoi(vars["id"])
+  
 	user, err := userC.session.GetUser(id)
 	if err != nil {
 		fmt.Println(err)
@@ -35,12 +36,12 @@ func (userC *UserController) Get(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
-
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+    
+  if err != nil {
+    fmt.Println(err)
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+  }
 
 	data := struct {
 		User      *models.User

@@ -1,0 +1,17 @@
+@media only screen and (max-width: 1200px) {
+    .meeting-card {
+        margin-top: 0 !important;
+        margin-bottom: 2rem;
+    }
+    .content {
+        max-width: 100% !important;
+    }
+    .meeting-div {
+        padding-left: 0 !important;
+    }
+    .card-deck{
+        display: inline-block;
+    }
+  }
+
+  
