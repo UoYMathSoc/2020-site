@@ -56,8 +56,9 @@ func RenderTemplates(w http.ResponseWriter, context structs.PageContext, data in
 
 	t := template.New("base.gohtml")
 	t.Funcs(template.FuncMap{
-		"url":  func(s string) string { return PrefixURL(s, context.URLPrefix) },
-		"html": renderHTML,
+		"url":       func(s string) string { return PrefixURL(s, context.URLPrefix) },
+		"html":      renderHTML,
+		"MonthYear": func(t time.Time) string { return fmt.Sprintf("%s %d", t.Month().String(), t.Year()) },
 	})
 	t, err = t.ParseFiles(templatePaths...)
 	if err != nil {
