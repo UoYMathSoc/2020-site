@@ -1,44 +1,47 @@
 package controllers
 
 import (
+	"github.com/UoYMathSoc/2020-site/views"
 	"net/http"
 
 	"github.com/UoYMathSoc/2020-site/structs"
-	"github.com/UoYMathSoc/2020-site/utils"
 )
 
 type StaticController struct {
-	Controller
+	controller
+	views map[string]*views.View
 }
 
 func NewStaticController(c *structs.Config) *StaticController {
-	return &StaticController{Controller{config: c}}
+	return &StaticController{controller: controller{config: c}, views: map[string]*views.View{}}
 }
 
-func (staticC *StaticController) Get(w http.ResponseWriter, r *http.Request, content string) {
-	err := utils.RenderContent(w, staticC.config.PageContext, nil, content)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+func (sc *StaticController) get(w http.ResponseWriter, content string) {
+	if _, ok := sc.views[content]; !ok {
+		sc.views[content] = views.New("base", content, "navbar")
 	}
+	sc.views[content].Render(w, sc.config.PageContext, nil)
 }
 
-func (staticC *StaticController) GetIndex(w http.ResponseWriter, r *http.Request) {
-	staticC.Get(w, r, "index.gohtml")
+func (sc *StaticController) GetIndex(w http.ResponseWriter, r *http.Request) {
+	sc.get(w, "index")
 }
 
-func (staticC *StaticController) GetAbout(w http.ResponseWriter, r *http.Request) {
-	staticC.Get(w, r, "about.gohtml")
+func (sc *StaticController) GetAbout(w http.ResponseWriter, r *http.Request) {
+	sc.get(w, "about")
 }
 
-func (staticC *StaticController) GetCommittee(w http.ResponseWriter, r *http.Request) {
-	staticC.Get(w, r, "committee.gohtml")
+func (sc *StaticController) GetCommittee(w http.ResponseWriter, r *http.Request) {
+	sc.get(w, "committee")
 }
 
-func (staticC *StaticController) GetContact(w http.ResponseWriter, r *http.Request) {
-	staticC.Get(w, r, "contact.gohtml")
+func (sc *StaticController) GetContact(w http.ResponseWriter, r *http.Request) {
+	sc.get(w, "contact")
 }
 
-func (staticC *StaticController) GetLogin(w http.ResponseWriter, r *http.Request) {
-	staticC.Get(w, r, "internal/login.gohtml")
+func (sc *StaticController) GetLogin(w http.ResponseWriter, r *http.Request) {
+	if _, ok := sc.views["login"]; !ok {
+		sc.views["login"] = views.New("base", "login", "adminbar")
+	}
+	sc.views["login"].Render(w, sc.config.PageContext, nil)
 }

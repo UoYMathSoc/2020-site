@@ -57,7 +57,7 @@ func RenderTemplates(w http.ResponseWriter, context structs.PageContext, data in
 	t := template.New("base.gohtml")
 	t.Funcs(template.FuncMap{
 		"url":       func(s string) string { return PrefixURL(s, context.URLPrefix) },
-		"html":      renderHTML,
+		"html":      RenderHTML,
 		"MonthYear": func(t time.Time) string { return fmt.Sprintf("%s %d", t.Month().String(), t.Year()) },
 	})
 	t, err = t.ParseFiles(templatePaths...)
@@ -68,7 +68,7 @@ func RenderTemplates(w http.ResponseWriter, context structs.PageContext, data in
 	return t.Execute(w, td)
 }
 
-func renderHTML(value interface{}) template.HTML {
+func RenderHTML(value interface{}) template.HTML {
 	return template.HTML(fmt.Sprint(value))
 }
 

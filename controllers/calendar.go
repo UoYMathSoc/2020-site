@@ -11,15 +11,15 @@ import (
 )
 
 type CalendarController struct {
-	Controller
+	controller
 }
 
-func NewCalendarController(c *structs.Config, s *models.Session) *CalendarController {
-	return &CalendarController{Controller{config: c, session: s}}
+func NewCalendarController(c *structs.Config, s *models.SessionStore) *CalendarController {
+	return &CalendarController{controller{config: c, Sessions: s}}
 }
 
 func (calendarC *CalendarController) GetICal(w http.ResponseWriter, r *http.Request) {
-	events, err := calendarC.session.ListEvents()
+	events, err := calendarC.Sessions.ListEvents()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

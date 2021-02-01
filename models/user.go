@@ -24,8 +24,16 @@ type Position struct {
 	TillDate time.Time
 }
 
-func (s *Session) GetUser(id int) (*User, error) {
-	user, err := s.querier.GetUser(context.Background(), int32(id))
+type UserStore struct {
+	querier database.Querier
+}
+
+func NewUserStore(q database.Querier) UserStore {
+	return UserStore{q}
+}
+
+func (us *UserStore) Get(id int) (*User, error) {
+	user, err := us.querier.GetUser(context.Background(), int32(id))
 	if err != nil {
 		return nil, err
 	}
@@ -39,15 +47,15 @@ func (s *Session) GetUser(id int) (*User, error) {
 	}, nil
 }
 
-func (s *Session) GetUserPositions(id int) ([]Position, error) {
-	positions, err := s.querier.GetUserPositions(context.Background(), int32(id))
+func (us *UserStore) GetPositions(id int) ([]Position, error) {
+	positions, err := us.querier.GetUserPositions(context.Background(), int32(id))
 	if err != nil {
 		return nil, err
 	}
 
 	var result []Position
 	for _, position := range positions {
-		p, err := s.querier.GetPosition(context.Background(), position.CommitteeID)
+		p, err := us.querier.GetPosition(context.Background(), position.CommitteeID)
 		if err != nil {
 			break
 		}
@@ -63,17 +71,21 @@ func (s *Session) GetUserPositions(id int) ([]Position, error) {
 	return result, nil
 }
 
-func (s *Session) ValidateUser(username, password string) (int, error) {
-	id, err := s.querier.FindUserUsername(context.Background(), username)
+func (us *UserStore) Validate(username, password string) (int, error) {
+	id, err := us.querier.FindUserUsername(context.Background(), username)
 	if err != nil {
 		return -1, fmt.Errorf("could not find user: %w", err)
 	}
-	creds, err := s.querier.GetUsersPass(context.Background(), id)
+	creds, err := us.querier.GetUsersPass(context.Background(), id)
 	err = bcrypt.CompareHashAndPassword([]byte(creds.Password), []byte(password))
 	if err != nil {
 		return -1, fmt.Errorf("could not validate user: %w", err)
 	}
 	return int(id), nil
+}
+
+func (us *UserStore) Create(user *User) error {
+	return nil //TODO: create this function
 }
 
 func sanitiseUser(user *database.User) {

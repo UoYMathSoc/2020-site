@@ -2,18 +2,20 @@ package controllers
 
 import (
 	"github.com/UoYMathSoc/2020-site/models"
+	"github.com/UoYMathSoc/2020-site/views"
 	"net/http"
 
 	"github.com/UoYMathSoc/2020-site/structs"
 )
 
-type Controller struct {
-	config  *structs.Config
-	session *models.Session
+type controller struct {
+	config   *structs.Config
+	Sessions *models.SessionStore
+	View     *views.View
 }
 
-// ControllerInterface defines the methods all controllers must implement.
-type ControllerInterface interface {
+// Controller defines the methods all controllers must implement.
+type Controller interface {
 	Get()
 	Post()
 	Delete()
@@ -25,30 +27,30 @@ type ControllerInterface interface {
 
 // The following methods will be refused unless specifically overwritten.
 
-func (c *Controller) Get(w http.ResponseWriter, r *http.Request) {
+func (c *controller) Get(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 }
 
-func (c *Controller) Post(w http.ResponseWriter, r *http.Request) {
+func (c *controller) Post(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 }
 
-func (c *Controller) Delete(w http.ResponseWriter, r *http.Request) {
+func (c *controller) Delete(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 }
 
-func (c *Controller) Put(w http.ResponseWriter, r *http.Request) {
+func (c *controller) Put(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 }
 
-func (c *Controller) Head(w http.ResponseWriter, r *http.Request) {
+func (c *controller) Head(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 }
 
-func (c *Controller) Patch(w http.ResponseWriter, r *http.Request) {
+func (c *controller) Patch(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 }
 
-func (c *Controller) Options(w http.ResponseWriter, r *http.Request) {
+func (c *controller) Options(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 }

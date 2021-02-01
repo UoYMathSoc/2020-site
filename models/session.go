@@ -8,15 +8,15 @@ import (
 	"github.com/UoYMathSoc/2020-site/structs"
 )
 
-type Session struct {
+type SessionStore struct {
 	querier database.Querier
 }
 
-func NewSession(querier database.Querier) *Session {
-	return &Session{querier: querier}
+func NewSessionStore(querier database.Querier) *SessionStore {
+	return &SessionStore{querier: querier}
 }
 
-func NewSessionFromConfig(db structs.Database) *Session {
+func NewSessionFromConfig(db structs.Database) *SessionStore {
 	dsn := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		db.Host, db.Port, db.User, db.Password, db.Name)
@@ -25,5 +25,5 @@ func NewSessionFromConfig(db structs.Database) *Session {
 		panic(err)
 	}
 
-	return &Session{querier: database.New(conn)}
+	return &SessionStore{querier: database.New(conn)}
 }

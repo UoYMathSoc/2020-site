@@ -8,7 +8,7 @@ import (
 )
 
 const getEvent = `-- name: GetEvent :one
-SELECT id, name, date, start_time, end_time, location, description
+SELECT id, name, start_time, end_time, location, description
 FROM events
 WHERE id = $1
 `
@@ -19,7 +19,6 @@ func (q *Queries) GetEvent(ctx context.Context, id int32) (Event, error) {
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
-		&i.Date,
 		&i.StartTime,
 		&i.EndTime,
 		&i.Location,
@@ -29,7 +28,7 @@ func (q *Queries) GetEvent(ctx context.Context, id int32) (Event, error) {
 }
 
 const listEvents = `-- name: ListEvents :many
-SELECT id, name, date, start_time, end_time, location, description
+SELECT id, name, start_time, end_time, location, description
 FROM events
 `
 
@@ -45,7 +44,6 @@ func (q *Queries) ListEvents(ctx context.Context) ([]Event, error) {
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
-			&i.Date,
 			&i.StartTime,
 			&i.EndTime,
 			&i.Location,

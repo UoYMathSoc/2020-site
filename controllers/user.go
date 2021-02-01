@@ -2,35 +2,65 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/UoYMathSoc/2020-site/database"
+	"github.com/UoYMathSoc/2020-site/views"
 	"net/http"
 	"strconv"
 
 	"github.com/UoYMathSoc/2020-site/models"
 	"github.com/UoYMathSoc/2020-site/structs"
-	"github.com/UoYMathSoc/2020-site/utils"
 	"github.com/gorilla/mux"
 )
 
 type UserController struct {
-	Controller
+	controller
+	Users models.UserStore
 }
 
 // NewUserController creates a new 'null' user controller
-func NewUserController(c *structs.Config, s *models.Session) *UserController {
-	return &UserController{Controller{config: c, session: s}}
+func NewUserController(c *structs.Config, q database.Querier) *UserController {
+	us := models.NewUserStore(q)
+	ss := models.NewSessionStore(q)
+	v := views.New("base", "user", "navbar")
+	con := controller{
+		config:   c,
+		Sessions: ss,
+		View:     v,
+	}
+	return &UserController{controller: con, Users: us}
 }
 
-func (userC *UserController) Get(w http.ResponseWriter, r *http.Request) {
+func (uc *UserController) Post(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, _ := strconv.Atoi(vars["id"])
 
-	user, err := userC.session.GetUser(id)
+	id, _ := strconv.Atoi(vars["id"])
+	user := models.User{
+		ID:       id,
+		Username: "user" + vars["id"],
+		Name:     "Mr. " + vars["id"],
+		Bio:      "I am not a proper user.",
+	}
+	err := uc.Users.Create(&user)
+	if err != nil {
+		return
+	}
+	uc.View.Render(w, uc.config.PageContext, nil)
+}
+
+func (uc *UserController) Get(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		return
+	}
+
+	user, err := uc.Users.Get(id)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	positions, err := userC.session.GetUserPositions(id)
+	positions, err := uc.Users.GetPositions(id)
 	if len(positions) == 0 {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
@@ -50,7 +80,8 @@ func (userC *UserController) Get(w http.ResponseWriter, r *http.Request) {
 		Positions: positions,
 	}
 
-	err = utils.RenderContent(w, userC.config.PageContext, data, "user.gohtml")
+	err = uc.View.Render(w, uc.config.PageContext, data)
+	//err = utils.RenderContent(w, uc.config.PageContext, data, "user.gohtml")
 	if err != nil {
 		fmt.Println(err)
 		return

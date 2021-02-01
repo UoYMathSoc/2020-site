@@ -3,5 +3,6 @@ CREATE TABLE users_committee (
     user_id      SERIAL NOT NULL REFERENCES users(id),
     committee_id SERIAL NOT NULL REFERENCES committee(id),
     from_date    date NOT NULL,
-    till_date    date
+    till_date    date,
+    outgoing     bool default false not null
 );

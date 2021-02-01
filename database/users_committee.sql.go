@@ -8,7 +8,7 @@ import (
 )
 
 const getPositionUsers = `-- name: GetPositionUsers :many
-SELECT id, user_id, committee_id, from_date, till_date
+SELECT id, user_id, committee_id, from_date, till_date, outgoing
 FROM users_committee
 WHERE committee_id = $1
 `
@@ -28,6 +28,7 @@ func (q *Queries) GetPositionUsers(ctx context.Context, committeeID int32) ([]Us
 			&i.CommitteeID,
 			&i.FromDate,
 			&i.TillDate,
+			&i.Outgoing,
 		); err != nil {
 			return nil, err
 		}
@@ -43,7 +44,7 @@ func (q *Queries) GetPositionUsers(ctx context.Context, committeeID int32) ([]Us
 }
 
 const getUserPositions = `-- name: GetUserPositions :many
-SELECT id, user_id, committee_id, from_date, till_date
+SELECT id, user_id, committee_id, from_date, till_date, outgoing
 FROM users_committee
 WHERE user_id = $1
 `
@@ -63,6 +64,7 @@ func (q *Queries) GetUserPositions(ctx context.Context, userID int32) ([]UsersCo
 			&i.CommitteeID,
 			&i.FromDate,
 			&i.TillDate,
+			&i.Outgoing,
 		); err != nil {
 			return nil, err
 		}

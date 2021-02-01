@@ -10,7 +10,6 @@ import (
 type Event struct {
 	ID          int32
 	Name        string
-	Date        time.Time
 	StartTime   time.Time
 	EndTime     sql.NullTime
 	Location    sql.NullString
@@ -48,6 +47,7 @@ type UsersCommittee struct {
 	CommitteeID int32
 	FromDate    time.Time
 	TillDate    sql.NullTime
+	Outgoing    bool
 }
 
 type UsersPass struct {

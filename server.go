@@ -1,7 +1,10 @@
 package main
 
 import (
+	"database/sql"
+	"fmt"
 	"github.com/UoYMathSoc/2020-site/controllers"
+	"github.com/UoYMathSoc/2020-site/database"
 	"github.com/UoYMathSoc/2020-site/models"
 	"github.com/UoYMathSoc/2020-site/structs"
 	"github.com/codegangsta/negroni"
@@ -25,19 +28,20 @@ func NewServer(c *structs.Config) (*Server, error) {
 	postRouter := router.Methods("POST").Subrouter()
 	//headRouter := router.Methods("HEAD").Subrouter()
 
-	session := models.NewSessionFromConfig(c.Database)
+	q := NewDBFromConfig(c.Database)
+	ss := models.NewSessionStore(q)
 
 	// Routes go in here
-	loginC := controllers.NewLoginController(c, session)
+	loginC := controllers.NewLoginController(c, q)
 	postRouter.HandleFunc("/login/", loginC.Post)
 
-	userC := controllers.NewUserController(c, session)
+	userC := controllers.NewUserController(c, q)
 	getRouter.HandleFunc("/user/{id}", userC.Get)
 
-	eventC := controllers.NewEventController(c, session)
+	eventC := controllers.NewEventController(c, ss)
 	getRouter.HandleFunc("/events/{id}", eventC.Get)
 
-	calendarC := controllers.NewCalendarController(c, session)
+	calendarC := controllers.NewCalendarController(c, ss)
 	getRouter.HandleFunc("/calendar/ical/MathSoc.ics", calendarC.GetICal)
 
 	staticC := controllers.NewStaticController(c)
@@ -52,4 +56,16 @@ func NewServer(c *structs.Config) (*Server, error) {
 
 	return &s, nil
 
+}
+
+func NewDBFromConfig(db structs.Database) *database.Queries {
+	dsn := fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		db.Host, db.Port, db.User, db.Password, db.Name)
+	conn, err := sql.Open("postgres", dsn)
+	if err != nil {
+		panic(err)
+	}
+
+	return database.New(conn)
 }
