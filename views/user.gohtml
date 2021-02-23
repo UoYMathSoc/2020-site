@@ -14,7 +14,7 @@
       <div class="container">
         <div class="row" style="place-content: center;">
           <div style="text-align: center;">
-            <img class="rounded-circle img-fluid" src="https://picsum.photos/200/200?random=1" alt="{{.User.Name}}">
+            <img class="rounded-circle" style="height: 220px" src="/images/users/{{.User.Username}}.jpg" alt="{{.User.Name}}">
             <p style="font-size: large; padding-top: 2rem;">{{.User.Bio}}</p>  
         </div>
         </div>
@@ -25,31 +25,36 @@
             <h2 style="color: #613b7a;">
               Committee Roles
             </h2>
-            <p style="font-size: large;">
+            <div style="font-size: large;">
               <ul class="list-unstyled">
                 {{range .Positions}}
-                <li style="padding-top: 1rem;"><b style="color: #613b7a;">{{.Name}}</b> since Feb 2020</li>
+                  <li style="padding-top: 1rem;"><b style="color: #613b7a;">{{.Name}}</b>
+                  {{if past .TillDate}}
+                    from {{MonthYear .FromDate}} to {{MonthYear .TillDate}}
+                  {{else}}
+                    since {{MonthYear .FromDate}}
+                  {{end}}
+                  </li>
                 {{end}}
               </ul>
-            </p>
+            </div>
           </div>
           <div class="col-6">
     
             <h2 style="color: #613b7a;">
               Contact Details
             </h2>
-            <p style="font-size: large;">
+            <div style="font-size: large;">
               <ul class="list-unstyled">
                 <li><span style="color: #9067a9; padding-right: 1rem;" class="fas fa-user fa-lg"
                     style=" vertical-align: middle;"></span>{{.User.Username}}</li>
                 <li><span style="color: #9067a9; padding-right: 1rem; padding-top: 1rem;" class="fas fa-envelope fa-lg"
-                    style=" vertical-align: middle;"></span>{{(index .Positions 0).Alias}}@york.ac.uk</li>
+                    style=" vertical-align: middle;"></span>{{(index .Positions 0).Alias}}@yums.org.uk</li>
               </ul>
-            </p>
+            </div>
           </div>
         </div>
     
-      </div>
       </div>
     </section>
   {{end}}

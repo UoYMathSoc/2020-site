@@ -1,0 +1,12 @@
+{{define "title"}}{{.PageContext.ShortName}} | {{.PageData.Post.Doc.Title}}{{end}}
+
+{{define "content"}}
+    {{with .Doc.Related}}
+        <h2>Related articles</h2>
+        <ul>
+            {{range .}}
+                <li><a href="{{.Path}}">{{.Title}}</a></li>
+            {{end}}
+        </ul>
+    {{end}}
+{{end}}

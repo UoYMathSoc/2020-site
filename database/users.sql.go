@@ -33,7 +33,7 @@ func (q *Queries) FindUserUsername(ctx context.Context, username string) (int32,
 	return id, err
 }
 
-const getUser = `-- name: GetUser :one
+const getUser = `-- name: Get :one
 SELECT id, username, name, bio
 FROM users
 WHERE id = $1

@@ -16,6 +16,12 @@ func NewStaticController(c *structs.Config) *StaticController {
 	return &StaticController{controller: controller{config: c}, views: map[string]*views.View{}}
 }
 
+func (sc *StaticController) Get(page string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		sc.get(w, page)
+	}
+}
+
 func (sc *StaticController) get(w http.ResponseWriter, content string) {
 	if _, ok := sc.views[content]; !ok {
 		sc.views[content] = views.New("base", content, "navbar")
@@ -23,25 +29,18 @@ func (sc *StaticController) get(w http.ResponseWriter, content string) {
 	sc.views[content].Render(w, sc.config.PageContext, nil)
 }
 
-func (sc *StaticController) GetIndex(w http.ResponseWriter, r *http.Request) {
+func (sc *StaticController) GetIndex(w http.ResponseWriter, _ *http.Request) {
 	sc.get(w, "index")
 }
 
-func (sc *StaticController) GetAbout(w http.ResponseWriter, r *http.Request) {
+func (sc *StaticController) GetAbout(w http.ResponseWriter, _ *http.Request) {
 	sc.get(w, "about")
 }
 
-func (sc *StaticController) GetCommittee(w http.ResponseWriter, r *http.Request) {
+func (sc *StaticController) GetCommittee(w http.ResponseWriter, _ *http.Request) {
 	sc.get(w, "committee")
 }
 
-func (sc *StaticController) GetContact(w http.ResponseWriter, r *http.Request) {
+func (sc *StaticController) GetContact(w http.ResponseWriter, _ *http.Request) {
 	sc.get(w, "contact")
-}
-
-func (sc *StaticController) GetLogin(w http.ResponseWriter, r *http.Request) {
-	if _, ok := sc.views["login"]; !ok {
-		sc.views["login"] = views.New("base", "login", "adminbar")
-	}
-	sc.views["login"].Render(w, sc.config.PageContext, nil)
 }

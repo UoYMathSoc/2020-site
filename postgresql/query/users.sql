@@ -2,7 +2,7 @@
 SELECT *
 FROM users;
 
--- name: GetUser :one
+-- name: Get :one
 SELECT *
 FROM users
 WHERE id = $1;

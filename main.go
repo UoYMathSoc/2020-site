@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/joho/godotenv"
 	"log"
 	"time"
 
@@ -11,6 +12,8 @@ import (
 )
 
 func main() {
+	_ = godotenv.Load()
+
 	log.SetFlags(log.Llongfile)
 
 	config := &structs.Config{}

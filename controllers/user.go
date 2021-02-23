@@ -2,13 +2,13 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/UoYMathSoc/2020-site/database"
-	"github.com/UoYMathSoc/2020-site/views"
 	"net/http"
 	"strconv"
 
+	"github.com/UoYMathSoc/2020-site/database"
 	"github.com/UoYMathSoc/2020-site/models"
 	"github.com/UoYMathSoc/2020-site/structs"
+	"github.com/UoYMathSoc/2020-site/views"
 	"github.com/gorilla/mux"
 )
 
@@ -20,7 +20,7 @@ type UserController struct {
 // NewUserController creates a new 'null' user controller
 func NewUserController(c *structs.Config, q database.Querier) *UserController {
 	us := models.NewUserStore(q)
-	ss := models.NewSessionStore(q)
+	ss := models.NewSessionStore(c, q)
 	v := views.New("base", "user", "navbar")
 	con := controller{
 		config:   c,
@@ -51,29 +51,22 @@ func (uc *UserController) Get(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
-
-	user, err := uc.Users.Get(id)
+	user, positions, err := uc.Users.Get(id)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	positions, err := uc.Users.GetPositions(id)
 	if len(positions) == 0 {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
 
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
 	data := struct {
-		User      *models.User
+		User      models.User
 		Positions []models.Position
 	}{
 		User:      user,
@@ -84,6 +77,5 @@ func (uc *UserController) Get(w http.ResponseWriter, r *http.Request) {
 	//err = utils.RenderContent(w, uc.config.PageContext, data, "user.gohtml")
 	if err != nil {
 		fmt.Println(err)
-		return
 	}
 }

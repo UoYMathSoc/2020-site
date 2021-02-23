@@ -15,8 +15,8 @@ type Event struct {
 	Description string
 }
 
-func (us *SessionStore) ListEvents() ([]Event, error) {
-	events, err := us.querier.ListEvents(context.Background())
+func (ss *SessionStore) ListEvents() ([]Event, error) {
+	events, err := ss.querier.ListEvents(context.Background())
 	if err != nil {
 		return nil, err
 	}
@@ -39,8 +39,8 @@ func (us *SessionStore) ListEvents() ([]Event, error) {
 	return result, nil
 }
 
-func (us *SessionStore) GetEvent(id int) (*Event, error) {
-	event, err := us.querier.GetEvent(context.Background(), int32(id))
+func (ss *SessionStore) GetEvent(id int) (*Event, error) {
+	event, err := ss.querier.GetEvent(context.Background(), int32(id))
 	if err != nil {
 		return nil, err
 	}

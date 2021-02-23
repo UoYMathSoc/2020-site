@@ -2,13 +2,15 @@ package views
 
 import (
 	"fmt"
-	"github.com/UoYMathSoc/2020-site/structs"
-	"github.com/UoYMathSoc/2020-site/utils"
 	"html/template"
 	"net/http"
 	"path/filepath"
 	"sync"
 	"time"
+
+	"github.com/UoYMathSoc/2020-site/structs"
+	"github.com/UoYMathSoc/2020-site/utils"
+	"golang.org/x/tools/present"
 )
 
 var (
@@ -27,6 +29,7 @@ func New(layout string, content string, elements ...string) *View {
 	filePaths = append(layoutFiles(), filePaths...)
 
 	return &View{
+		name:      content,
 		Layout:    layout,
 		filePaths: filePaths,
 		err:       nil,
@@ -34,6 +37,7 @@ func New(layout string, content string, elements ...string) *View {
 }
 
 type View struct {
+	name      string
 	Template  *template.Template
 	Layout    string
 	filePaths []string
@@ -43,11 +47,14 @@ type View struct {
 
 func (v *View) Render(w http.ResponseWriter, context structs.PageContext, data interface{}) error {
 	v.init.Do(func() {
-		v.Template = template.New(v.Layout + FileExt)
+		v.Template = present.Template() //template.New(v.Layout + FileExt)
 		v.Template.Funcs(template.FuncMap{
 			"url":       func(s string) string { return utils.PrefixURL(s, context.URLPrefix) },
 			"html":      utils.RenderHTML,
 			"MonthYear": func(t time.Time) string { return fmt.Sprintf("%s %d", t.Month().String(), t.Year()) },
+			"eq":        func(a, b interface{}) bool { return a == b },
+			"active":    func(page string) bool { return v.name == page },
+			"past":      func(t time.Time) bool { return t.Before(time.Now()) && t.Year() != 1 },
 		})
 		v.Template, v.err = v.Template.ParseFiles(v.filePaths...)
 	})

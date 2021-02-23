@@ -20,3 +20,9 @@
 
 # GoLand files
 .idea/
+
+# Profile Pictures
+/public/images/users/
+
+# Environment Variables
+/.env

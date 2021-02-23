@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/UoYMathSoc/2020-site/controllers"
 	"github.com/UoYMathSoc/2020-site/database"
 	"github.com/UoYMathSoc/2020-site/models"
@@ -29,27 +30,38 @@ func NewServer(c *structs.Config) (*Server, error) {
 	//headRouter := router.Methods("HEAD").Subrouter()
 
 	q := NewDBFromConfig(c.Database)
-	ss := models.NewSessionStore(q)
+	ss := models.NewSessionStore(c, q)
 
 	// Routes go in here
 	loginC := controllers.NewLoginController(c, q)
-	postRouter.HandleFunc("/login/", loginC.Post)
+	getRouter.HandleFunc("/login", loginC.Get)
+	getRouter.HandleFunc("/callback-gl", loginC.Callback)
+	getRouter.HandleFunc("/google", loginC.Google)
+	getRouter.HandleFunc("/destroy", loginC.Destroy)
+	postRouter.HandleFunc("/login", loginC.Post)
+
+	adminC := controllers.NewAdminController(c, q)
+	getRouter.HandleFunc("/admin", adminC.Get)
 
 	userC := controllers.NewUserController(c, q)
 	getRouter.HandleFunc("/user/{id}", userC.Get)
 
+	committeeC := controllers.NewCommitteeController(c, q)
+	getRouter.HandleFunc("/committee", committeeC.Get)
+
 	eventC := controllers.NewEventController(c, ss)
-	getRouter.HandleFunc("/events/{id}", eventC.Get)
+	getRouter.HandleFunc("/event/{id}", eventC.Get)
+
+	postC := controllers.NewPostController(c, q)
+	getRouter.HandleFunc("/post/{key}", postC.Get)
 
 	calendarC := controllers.NewCalendarController(c, ss)
 	getRouter.HandleFunc("/calendar/ical/MathSoc.ics", calendarC.GetICal)
 
 	staticC := controllers.NewStaticController(c)
 	getRouter.HandleFunc("/", staticC.GetIndex)
-	getRouter.HandleFunc("/about/", staticC.GetAbout)
-	getRouter.HandleFunc("/committee", staticC.GetCommittee)
+	getRouter.HandleFunc("/about", staticC.GetAbout)
 	getRouter.HandleFunc("/contact", staticC.GetContact)
-	getRouter.HandleFunc("/login/", staticC.GetLogin)
 	// End routes
 
 	s.UseHandler(router)
