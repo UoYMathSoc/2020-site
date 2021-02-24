@@ -28,9 +28,20 @@ type Position struct {
 
 type Positions []Position
 
-func (p Positions) Len() int           { return len(p) }
-func (p Positions) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
-func (p Positions) Less(i, j int) bool { return p[i].ordering < p[j].ordering }
+func (p Positions) Len() int              { return len(p) }
+func (p Positions) Swap(i, j int)         { p[i], p[j] = p[j], p[i] }
+func (p Positions) Before(i, j int) bool  { return p[i].ordering < p[j].ordering }
+func (p Positions) Earlier(i, j int) bool { return p[i].FromDate.After(p[j].FromDate) }
+
+func (p Positions) ByOrder() Positions {
+	sort.Slice(p, p.Before)
+	return p
+}
+
+func (p Positions) ByDate() Positions {
+	sort.Slice(p, p.Earlier)
+	return p
+}
 
 type Officer struct {
 	Position Position
@@ -104,8 +115,8 @@ func (us *UserStore) getPositions(id int) (Positions, error) {
 		}
 		result = append(result, position)
 	}
-	sort.Sort(result)
-	return result, nil
+
+	return result.ByOrder(), nil
 }
 
 func (us *UserStore) GetCommittee() (executive Committee, committee Committee, err error) {

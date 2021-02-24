@@ -70,7 +70,7 @@ func (uc *UserController) Get(w http.ResponseWriter, r *http.Request) {
 		Positions []models.Position
 	}{
 		User:      user,
-		Positions: positions,
+		Positions: positions.ByDate(),
 	}
 
 	err = uc.View.Render(w, uc.config.PageContext, data)
