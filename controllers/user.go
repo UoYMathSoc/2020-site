@@ -34,16 +34,16 @@ func (uc *UserController) Post(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	id, _ := strconv.Atoi(vars["id"])
-	user := models.User{
+	_ = models.User{
 		ID:       id,
 		Username: "user" + vars["id"],
 		Name:     "Mr. " + vars["id"],
 		Bio:      "I am not a proper user.",
 	}
-	err := uc.Users.Create(&user)
-	if err != nil {
-		return
-	}
+	//_, err := uc.Users.Create(&user)
+	//if err != nil {
+	//	return
+	//}
 	uc.View.Render(w, uc.config.PageContext, nil)
 }
 

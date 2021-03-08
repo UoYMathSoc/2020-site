@@ -1,11 +1,9 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
+	"github.com/UoYMathSoc/2020-site/utils"
 
 	"github.com/UoYMathSoc/2020-site/controllers"
-	"github.com/UoYMathSoc/2020-site/database"
 	"github.com/UoYMathSoc/2020-site/models"
 	"github.com/UoYMathSoc/2020-site/structs"
 	"github.com/codegangsta/negroni"
@@ -29,7 +27,7 @@ func NewServer(c *structs.Config) (*Server, error) {
 	postRouter := router.Methods("POST").Subrouter()
 	//headRouter := router.Methods("HEAD").Subrouter()
 
-	q := NewDBFromConfig(c.Database)
+	q := utils.NewDBFromConfig(c.Database)
 	ss := models.NewSessionStore(c, q)
 
 	// Routes go in here
@@ -68,16 +66,4 @@ func NewServer(c *structs.Config) (*Server, error) {
 
 	return &s, nil
 
-}
-
-func NewDBFromConfig(db structs.Database) *database.Queries {
-	dsn := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		db.Host, db.Port, db.User, db.Password, db.Name)
-	conn, err := sql.Open("postgres", dsn)
-	if err != nil {
-		panic(err)
-	}
-
-	return database.New(conn)
 }

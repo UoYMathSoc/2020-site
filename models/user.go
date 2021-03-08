@@ -172,8 +172,23 @@ func (us *UserStore) Validate(username, password string) (int, error) {
 	return int(id), nil
 }
 
-func (us *UserStore) Create(user *User) error {
-	return nil //TODO: create this function
+func (us *UserStore) Create(username, password string) (int, error) {
+	id, err := us.querier.CreateUser(context.Background(), username)
+	if err != nil {
+		return -1, fmt.Errorf("could not create user: %w", err)
+	}
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return int(id), fmt.Errorf("could not hash password: %w", err)
+	}
+	err = us.querier.SetUsersPass(context.Background(), database.SetUsersPassParams{
+		ID:       id,
+		Password: string(hash),
+	})
+	if err != nil {
+		return int(id), fmt.Errorf("could not set user password: %w", err)
+	}
+	return int(id), nil
 }
 
 func sanitiseUser(user *database.User) {

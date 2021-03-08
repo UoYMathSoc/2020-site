@@ -69,7 +69,17 @@ func (lc *LoginController) Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/admin", http.StatusTemporaryRedirect)
+	session, _ := lc.Sessions.Get(r, sessionStoreKey)
+	session.Values["username"] = username
+	err = session.Save(r, w)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	r.Method = http.MethodGet
+
+	http.Redirect(w, r, "/admin", http.StatusSeeOther)
 }
 
 func (lc *LoginController) Callback(w http.ResponseWriter, r *http.Request) {

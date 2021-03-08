@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
 	"log"
 	"time"
 
 	"github.com/BurntSushi/toml"
 	"github.com/UoYMathSoc/2020-site/structs"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/graceful"
 )
 
