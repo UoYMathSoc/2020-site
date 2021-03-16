@@ -26,3 +26,6 @@
 
 # Environment Variables
 /.env
+
+# Database Files
+/pgdata

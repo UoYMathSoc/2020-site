@@ -27,7 +27,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	l := fmt.Sprintf("%s:%d", config.Server.Address, config.Server.Port)
+	l := fmt.Sprintf(":%d", config.Server.Port)
 	log.Printf("Listening on: %s", l)
 	graceful.Run(l, time.Duration(config.Server.Timeout), s)
 }
