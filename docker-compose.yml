@@ -15,5 +15,7 @@ services:
     image: 2020-site
     depends_on: 
       - db
+    volumes:
+      - ./public:/site/public
     ports: 
       - "80:3000"
