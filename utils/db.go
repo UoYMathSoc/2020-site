@@ -6,6 +6,7 @@ import (
 
 	"github.com/UoYMathSoc/2020-site/database"
 	"github.com/UoYMathSoc/2020-site/structs"
+	_ "github.com/lib/pq"
 )
 
 func NewDBFromConfig(db structs.Database) *database.Queries {
