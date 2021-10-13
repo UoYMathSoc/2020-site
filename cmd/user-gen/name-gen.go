@@ -12,13 +12,12 @@ import (
 	"github.com/UoYMathSoc/2020-site/models"
 	"github.com/UoYMathSoc/2020-site/structs"
 	"github.com/UoYMathSoc/2020-site/utils"
-	_ "github.com/lib/pq"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
 func main() {
 	config := &structs.Config{}
-	_, err := toml.DecodeFile("../../config.toml", config)
+	_, err := toml.DecodeFile("config.toml", config)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,7 +38,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("User", username, "successfully created with ID:", id)
+	log.Println("User ", username, "successfully created with ID:", id)
 }
 
 func credentials() (username, password string, err error) {
@@ -53,6 +52,7 @@ func credentials() (username, password string, err error) {
 
 	fmt.Print("Enter Password: ")
 	bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
+	fmt.Println("")
 	if err != nil {
 		return "", "", err
 	}
