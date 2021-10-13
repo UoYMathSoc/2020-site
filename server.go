@@ -8,7 +8,6 @@ import (
 	"github.com/UoYMathSoc/2020-site/structs"
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
-	_ "github.com/lib/pq"
 )
 
 // Server is the type of the main 2020site web application.
