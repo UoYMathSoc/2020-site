@@ -28,4 +28,4 @@
 /.env
 
 # Database Files
-/pgdata
+/volumes
