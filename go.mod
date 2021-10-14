@@ -8,6 +8,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/sessions v1.2.1
 	github.com/joho/godotenv v1.3.0
+	github.com/joncalhoun/form v1.0.0
 	github.com/lib/pq v1.10.0
 	github.com/stretchr/graceful v1.2.15
 	golang.org/x/crypto v0.0.0-20210314154223-e6e6c4f2bb5b

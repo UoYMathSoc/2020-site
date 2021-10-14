@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/UoYMathSoc/2020-site/forms"
 	"github.com/UoYMathSoc/2020-site/utils"
 
 	"github.com/UoYMathSoc/2020-site/controllers"
@@ -39,6 +40,7 @@ func NewServer(c *structs.Config) (*Server, error) {
 
 	adminC := controllers.NewAdminController(c, q)
 	getRouter.HandleFunc("/admin", adminC.Get)
+	getRouter.HandleFunc("/form", adminC.GetForm(forms.NewUser))
 
 	userC := controllers.NewUserController(c, q)
 	getRouter.HandleFunc("/user/{id}", userC.Get)

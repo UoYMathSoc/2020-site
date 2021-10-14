@@ -30,6 +30,7 @@ func New(layout string, content string, elements ...string) *View {
 
 	return &View{
 		name:      content,
+		Template:  present.Template(),
 		Layout:    layout,
 		filePaths: filePaths,
 		err:       nil,
@@ -45,9 +46,13 @@ type View struct {
 	init      sync.Once
 }
 
+func (v *View) Funcs(funcMap template.FuncMap) *View {
+	v.Template.Funcs(funcMap)
+	return v
+}
+
 func (v *View) Render(w http.ResponseWriter, context structs.PageContext, data interface{}) error {
 	v.init.Do(func() {
-		v.Template = present.Template() //template.New(v.Layout + FileExt)
 		v.Template.Funcs(template.FuncMap{
 			"url":       func(s string) string { return utils.PrefixURL(s, context.URLPrefix) },
 			"html":      utils.RenderHTML,
@@ -69,12 +74,6 @@ func (v *View) Render(w http.ResponseWriter, context structs.PageContext, data i
 	}
 
 	return v.Template.ExecuteTemplate(w, v.Layout+FileExt, td)
-}
-
-func (v *View) parse() {
-	t := template.New(v.Layout + FileExt)
-	t, v.err = template.ParseFiles(v.filePaths...)
-	v.Template = t
 }
 
 func layoutFiles() []string {
