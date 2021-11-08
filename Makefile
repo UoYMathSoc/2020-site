@@ -12,3 +12,6 @@ db:
 
 dev:
 	go run *.go
+
+db-conn:
+        docker exec -it 2020-site_db_1 psql -U postgres
