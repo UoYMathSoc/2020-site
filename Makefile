@@ -2,7 +2,7 @@ build:
 	go build -o 2020-site
 
 run:
-	docker-compose up -d
+	docker-compose up -d --force-recreate
 
 stop:
 	docker-compose down
